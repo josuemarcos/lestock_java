@@ -2,8 +2,8 @@ spring:
   application:
     name: lestock
   datasource:
-    url: jdbc:postgresql://localhost:5432/java_course
-    username: java_user
+    url: jdbc:postgresql://localhost:5432/lestock_db
+    username: lestock
     password: pass321
     driver-class-name: org.postgresql.Driver
   jpa:
