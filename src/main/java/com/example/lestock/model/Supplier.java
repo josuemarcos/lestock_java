@@ -15,7 +15,7 @@ public class Supplier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = true)
@@ -24,7 +24,7 @@ public class Supplier {
     @Column(nullable = true)
     private String contact;
 
-    @Column(nullable = true)
+    @Column(nullable = true, name = "social_media")
     private String socialMedia;
 
     @Column(nullable = true)

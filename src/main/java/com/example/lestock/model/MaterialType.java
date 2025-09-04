@@ -31,6 +31,6 @@ public class MaterialType
     @Column(name = "last_modified_date")
     private LocalDateTime lastModifiedDate;
 
-    @OneToMany(mappedBy = "material_type")
+    @OneToMany(mappedBy = "materialType")
     private List<Material> materials;
 }

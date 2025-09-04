@@ -28,7 +28,7 @@ public class Material {
     private String brand;
 
     @Column(name = "average_delivery_time")
-    private int averageDeliveryTime;
+    private Integer averageDeliveryTime;
 
     @CreatedDate
     @Column(name = "created_date")
