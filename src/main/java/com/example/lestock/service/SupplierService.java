@@ -4,6 +4,7 @@ import com.example.lestock.model.Supplier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,5 +17,9 @@ public class SupplierService {
 
     public void saveSupplier(Supplier supplier) {
         supplierDAO.save(supplier);
+    }
+
+    public Optional<Supplier> getSupplierById(Long id) {
+        return supplierDAO.findById(id);
     }
 }

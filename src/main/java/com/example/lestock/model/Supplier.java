@@ -18,16 +18,16 @@ public class Supplier {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = true)
+    @Column
     private String description;
 
-    @Column(nullable = true)
+    @Column
     private String contact;
 
-    @Column(nullable = true, name = "social_media")
+    @Column(name = "social_media")
     private String socialMedia;
 
-    @Column(nullable = true)
+    @Column
     private String address;
 
     @CreatedDate

@@ -32,4 +32,16 @@ public class SupplierController implements GenericController {
                 .toList();
         return ResponseEntity.ok(suppliers);
     }
+
+    @GetMapping("{id}")
+    public ResponseEntity<SupplierDTO> getSupplier(@PathVariable Long id){
+        return supplierService.getSupplierById(id)
+                .map(
+                        supplier -> {
+                            SupplierDTO supplierDTO = supplierMapper.toDTO(supplier);
+                            return ResponseEntity.ok(supplierDTO);
+                        }
+                )
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
