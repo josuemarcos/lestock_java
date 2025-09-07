@@ -60,4 +60,15 @@ public class SupplierController implements GenericController {
                         }
                 ).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Object> deleteSupplier(@PathVariable Long id) {
+        return supplierService.getSupplierById(id)
+                .map(
+                        supplier -> {
+                            supplierService.deleteSupplier(supplier);
+                            return ResponseEntity.noContent().build();
+                        }
+                ).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

@@ -26,4 +26,8 @@ public class SupplierService {
     public void updateSupplier(Supplier supplier) {
         supplierDAO.save(supplier);
     }
+
+    public void deleteSupplier(Supplier supplier) {
+        supplierDAO.delete(supplier);
+    }
 }
