@@ -44,4 +44,20 @@ public class SupplierController implements GenericController {
                 )
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Object> updateSupplier(@PathVariable Long id, @RequestBody SupplierDTO supplierDTO){
+        return supplierService.getSupplierById(supplierDTO.id())
+                .map(
+                        supplier -> {
+                            supplier.setName(supplierDTO.name());
+                            supplier.setAddress(supplierDTO.address());
+                            supplier.setContact(supplierDTO.contact());
+                            supplier.setDescription(supplierDTO.description());
+                            supplier.setSocialMedia(supplierDTO.socialMedia());
+                            supplierService.updateSupplier(supplier);
+                            return ResponseEntity.ok().build();
+                        }
+                ).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

@@ -22,4 +22,8 @@ public class SupplierService {
     public Optional<Supplier> getSupplierById(Long id) {
         return supplierDAO.findById(id);
     }
+
+    public void updateSupplier(Supplier supplier) {
+        supplierDAO.save(supplier);
+    }
 }
