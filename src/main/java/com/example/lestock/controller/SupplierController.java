@@ -47,7 +47,7 @@ public class SupplierController implements GenericController {
 
     @PutMapping("{id}")
     public ResponseEntity<Object> updateSupplier(@PathVariable Long id, @RequestBody SupplierDTO supplierDTO){
-        return supplierService.getSupplierById(supplierDTO.id())
+        return supplierService.getSupplierById(id)
                 .map(
                         supplier -> {
                             supplier.setName(supplierDTO.name());
