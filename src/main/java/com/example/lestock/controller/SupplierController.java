@@ -3,6 +3,7 @@ import com.example.lestock.controller.dto.SupplierDTO;
 import com.example.lestock.controller.mapper.SupplierMapper;
 import com.example.lestock.model.Supplier;
 import com.example.lestock.service.SupplierService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class SupplierController implements GenericController {
     private final SupplierMapper supplierMapper;
 
     @PostMapping
-    public ResponseEntity<Void> saveSupplier(@RequestBody SupplierDTO supplierDTO) {
+    public ResponseEntity<Void> saveSupplier(@RequestBody @Valid SupplierDTO supplierDTO) {
         Supplier supplierEntity = supplierMapper.toEntity(supplierDTO);
         supplierService.saveSupplier(supplierEntity);
         URI location = generateHeaderLocation(supplierEntity.getId());
@@ -46,7 +47,7 @@ public class SupplierController implements GenericController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Object> updateSupplier(@PathVariable Long id, @RequestBody SupplierDTO supplierDTO){
+    public ResponseEntity<Object> updateSupplier(@PathVariable Long id, @RequestBody @Valid SupplierDTO supplierDTO){
         return supplierService.getSupplierById(id)
                 .map(
                         supplier -> {
