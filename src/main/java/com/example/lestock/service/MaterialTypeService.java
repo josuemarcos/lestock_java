@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,10 @@ public class MaterialTypeService {
 
     public List<MaterialType> getMaterialTypes() {
         return materialTypeDAO.findAll();
+    }
+
+    public Optional<MaterialType> getMaterialType(Long id) {
+        return materialTypeDAO.findById(id);
     }
 
 }
