@@ -4,6 +4,8 @@ import com.example.lestock.model.MaterialType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MaterialTypeService {
@@ -11,6 +13,10 @@ public class MaterialTypeService {
 
     public void saveMaterialType(MaterialType materialType) {
         materialTypeDAO.save(materialType);
+    }
+
+    public List<MaterialType> getMaterialTypes() {
+        return materialTypeDAO.findAll();
     }
 
 }
