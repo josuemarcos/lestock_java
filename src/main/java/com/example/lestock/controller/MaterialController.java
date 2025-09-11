@@ -1,5 +1,6 @@
 package com.example.lestock.controller;
 
+import com.example.lestock.controller.dto.GetMaterialDTO;
 import com.example.lestock.controller.dto.SaveMaterialDTO;
 import com.example.lestock.controller.mapper.MaterialMapper;
 import com.example.lestock.model.Material;
@@ -7,12 +8,10 @@ import com.example.lestock.service.MaterialService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,5 +26,14 @@ public class MaterialController implements GenericController {
         materialService.saveMaterial(materialEntity);
         URI location = generateHeaderLocation(materialEntity.getId());
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping
+    ResponseEntity<List<GetMaterialDTO>> getAllMaterials() {
+        List<GetMaterialDTO> materials = materialService.getAllMaterials()
+                .stream()
+                .map(materialMapper::toDTO)
+                .toList();
+        return ResponseEntity.ok(materials);
     }
 }

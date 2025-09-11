@@ -6,8 +6,6 @@ public record GetMaterialDTO(
         String description,
         String brand,
         Integer averageDeliveryTime,
-        Long supplier_id,
-        Long material_type_id,
         SupplierDTO supplier,
         MaterialTypeDTO materialType
 ) {
