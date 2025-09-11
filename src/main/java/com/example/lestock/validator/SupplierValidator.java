@@ -1,50 +1,36 @@
 package com.example.lestock.validator;
-import com.example.lestock.controller.dto.SupplierDTO;
-import com.example.lestock.controller.mapper.SupplierMapper;
 import com.example.lestock.dao.SupplierDAO;
+import com.example.lestock.exceptions.DuplicateRecordException;
 import com.example.lestock.model.Supplier;
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.Optional;
 
+@Service
 @RequiredArgsConstructor
-public class SupplierValidator implements ConstraintValidator<ValidSupplier, SupplierDTO> {
+public class SupplierValidator  {
     private final SupplierDAO supplierDAO;
-    private final SupplierMapper supplierMapper;
 
-    @Override
-    public boolean isValid(SupplierDTO supplierDTO, ConstraintValidatorContext context) {
-        if(supplierDTO == null) return true;
-        boolean valid = true;
-        context.disableDefaultConstraintViolation();
-
-        if(isSupplierSaved(supplierDTO)) {
-            context.buildConstraintViolationWithTemplate("Supplier already created!")
-                    .addPropertyNode("name")
-                    .addConstraintViolation();
-            valid = false;
+    public void isSupplierValid(Supplier supplier) {
+        if(isSupplierSaved(supplier)) {
+            throw new DuplicateRecordException("Supplier already exists");
         }
-        return valid;
-
     }
 
-    public Boolean isSupplierSaved(SupplierDTO supplierDTO) {
-        Supplier supplierEntity = supplierMapper.toEntity(supplierDTO);
-        Optional<Supplier> supplierOptional = supplierDAO.findByName(supplierDTO.name());
+    private Boolean isSupplierSaved(Supplier supplier) {
+        Optional<Supplier> supplierOptional = supplierDAO.findByName(supplier.getName());
 
-        if (supplierEntity.getId() == null) {
+        if (supplier.getId() == null) {
             return supplierOptional.isPresent();
         }
-
         return supplierOptional
                 .map(Supplier::getId)
                 .stream()
                 .anyMatch(
-                        id -> !id.equals(supplierEntity.getId())
+                        id -> !id.equals(supplier.getId())
                 );
-
     }
 
 }

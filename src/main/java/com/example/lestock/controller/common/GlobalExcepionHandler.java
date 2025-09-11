@@ -2,6 +2,7 @@ package com.example.lestock.controller.common;
 
 import com.example.lestock.controller.dto.FieldErrorDTO;
 import com.example.lestock.controller.dto.ResponseErrorDTO;
+import com.example.lestock.exceptions.DuplicateRecordException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,5 +28,14 @@ public class GlobalExcepionHandler {
                 "Validation error",
                 fieldErrorDTOS
                 );
+    }
+    @ExceptionHandler(DuplicateRecordException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ResponseErrorDTO handleDuplicateRecordException(DuplicateRecordException e) {
+        return new ResponseErrorDTO(
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                e.getMessage(),
+                List.of()
+        );
     }
 }
