@@ -3,8 +3,8 @@ import com.example.lestock.dao.MaterialDAO;
 import com.example.lestock.model.Material;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +17,10 @@ public class MaterialService {
 
     public List<Material> getAllMaterials() {
         return materialDAO.findAll();
+    }
+
+    public Optional<Material> getMaterialById(Long id) {
+        return materialDAO.findById(id);
     }
 
 }

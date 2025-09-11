@@ -36,4 +36,15 @@ public class MaterialController implements GenericController {
                 .toList();
         return ResponseEntity.ok(materials);
     }
+
+    @GetMapping("/{id}")
+    ResponseEntity<GetMaterialDTO> getMaterial(@PathVariable Long id) {
+        return materialService.getMaterialById(id)
+                .map(
+                        material -> {
+                            GetMaterialDTO materialDTO = materialMapper.toDTO(material);
+                            return ResponseEntity.ok(materialDTO);
+                        }
+                ).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
