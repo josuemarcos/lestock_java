@@ -4,7 +4,6 @@ import com.example.lestock.exceptions.DuplicateRecordException;
 import com.example.lestock.model.Supplier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.Optional;
 
@@ -13,7 +12,7 @@ import java.util.Optional;
 public class SupplierValidator  {
     private final SupplierDAO supplierDAO;
 
-    public void isSupplierValid(Supplier supplier) {
+    public void validateSupplier(Supplier supplier) {
         if(isSupplierSaved(supplier)) {
             throw new DuplicateRecordException("Supplier already exists");
         }

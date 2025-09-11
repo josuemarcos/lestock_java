@@ -1,6 +1,7 @@
 package com.example.lestock.service;
 import com.example.lestock.dao.MaterialTypeDAO;
 import com.example.lestock.model.MaterialType;
+import com.example.lestock.validator.MaterialTypeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +12,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MaterialTypeService {
     private final MaterialTypeDAO materialTypeDAO;
+    private final MaterialTypeValidator materialTypeValidator;
 
     public void saveMaterialType(MaterialType materialType) {
+        materialTypeValidator.validateMaterialType(materialType);
         materialTypeDAO.save(materialType);
     }
 
@@ -22,6 +25,11 @@ public class MaterialTypeService {
 
     public Optional<MaterialType> getMaterialType(Long id) {
         return materialTypeDAO.findById(id);
+    }
+
+    public void updateMaterialType(MaterialType materialType) {
+        materialTypeValidator.validateMaterialType(materialType);
+        materialTypeDAO.save(materialType);
     }
 
 }

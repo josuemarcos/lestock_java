@@ -18,7 +18,7 @@ public class SupplierService {
     }
 
     public void saveSupplier(Supplier supplier) {
-        supplierValidator.isSupplierValid(supplier);
+        supplierValidator.validateSupplier(supplier);
         supplierDAO.save(supplier);
     }
 
@@ -27,7 +27,7 @@ public class SupplierService {
     }
 
     public void updateSupplier(Supplier supplier) {
-        supplierValidator.isSupplierValid(supplier);
+        supplierValidator.validateSupplier(supplier);
         supplierDAO.save(supplier);
     }
 
