@@ -31,4 +31,8 @@ public class MaterialService {
         materialDAO.save(material);
     }
 
+    public void deleteMaterial(Material material) {
+        materialDAO.delete(material);
+    }
+
 }

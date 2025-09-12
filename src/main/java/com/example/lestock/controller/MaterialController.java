@@ -73,4 +73,15 @@ public class MaterialController implements GenericController {
                     return ResponseEntity.ok().build();
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<Object> deleteMaterial(@PathVariable Long id) {
+        return materialService.getMaterialById(id)
+                .map(
+                        material -> {
+                            materialService.deleteMaterial(material);
+                            return ResponseEntity.noContent().build();
+                        }
+                ).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

@@ -32,7 +32,7 @@ public class MaterialValidator implements ConstraintValidator<ValidMaterial, Sav
             valid = false;
         }
 
-        else if(isMaterialTypeRegistered(saveMaterialDTO)) {
+        if(isMaterialTypeRegistered(saveMaterialDTO)) {
             context.buildConstraintViolationWithTemplate("Invalid Material Type")
                     .addPropertyNode("IdMaterialType")
                     .addConstraintViolation();
