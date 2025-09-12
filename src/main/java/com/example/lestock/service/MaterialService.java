@@ -26,4 +26,9 @@ public class MaterialService {
         return materialDAO.findById(id);
     }
 
+    public void updateMaterial(Material material) {
+        materialValidator.validateMaterial(material);
+        materialDAO.save(material);
+    }
+
 }

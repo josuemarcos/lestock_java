@@ -4,7 +4,11 @@ import com.example.lestock.controller.dto.GetMaterialDTO;
 import com.example.lestock.controller.dto.SaveMaterialDTO;
 import com.example.lestock.controller.mapper.MaterialMapper;
 import com.example.lestock.model.Material;
+import com.example.lestock.model.MaterialType;
+import com.example.lestock.model.Supplier;
 import com.example.lestock.service.MaterialService;
+import com.example.lestock.service.MaterialTypeService;
+import com.example.lestock.service.SupplierService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +25,8 @@ import java.util.List;
 public class MaterialController implements GenericController {
     private final MaterialService materialService;
     private final MaterialMapper materialMapper;
+    private final SupplierService supplierService;
+    private final MaterialTypeService materialTypeService;
 
     @PostMapping
     ResponseEntity<Void> saveMaterial(@RequestBody @Valid SaveMaterialDTO materialDTO) {
@@ -46,5 +54,23 @@ public class MaterialController implements GenericController {
                             return ResponseEntity.ok(materialDTO);
                         }
                 ).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<Object> updateMaterial(@PathVariable Long id, @RequestBody @Valid SaveMaterialDTO materialDTO) {
+        return materialService.getMaterialById(id)
+                .map(material -> {
+                    Optional<Supplier> supplier = supplierService.getSupplierById(materialDTO.IdSupplier());
+                    Optional<MaterialType> materialType = materialTypeService.getMaterialType(materialDTO.IdMaterialType());
+                    material.setSupplier(supplier.get());
+                    material.setMaterialType(materialType.get());
+                    material.setBrand(materialDTO.brand());
+                    material.setDescription(materialDTO.description());
+                    material.setAverageDeliveryTime(materialDTO.averageDeliveryTime());
+                    material.setMinimumPurchaseAmount(materialDTO.minimumPurchaseAmount());
+                    material.setPrice(materialDTO.price());
+                    materialService.updateMaterial(material);
+                    return ResponseEntity.ok().build();
+                }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
