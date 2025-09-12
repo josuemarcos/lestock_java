@@ -1,6 +1,7 @@
 package com.example.lestock.service;
 import com.example.lestock.dao.MaterialDAO;
 import com.example.lestock.model.Material;
+import com.example.lestock.validator.MaterialValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -10,8 +11,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MaterialService {
     private final MaterialDAO materialDAO;
+    private final MaterialValidator materialValidator;
 
     public void saveMaterial(Material material) {
+        materialValidator.validateMaterial(material);
         materialDAO.save(material);
     }
 
