@@ -23,7 +23,7 @@ public class MaterialTypeValidator  {
     }
 
     private Boolean isMaterialTypeSaved(MaterialType materialType) {
-        Optional<MaterialType> materialTypeOptional = materialTypeDAO.findByName(materialType.getName());
+        Optional<MaterialType> materialTypeOptional = materialTypeDAO.findByNameAndBrand(materialType.getName(), materialType.getBrand());
 
         if (materialType.getId() == null) {
             return materialTypeOptional.isPresent();
