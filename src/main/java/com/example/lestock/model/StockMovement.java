@@ -1,31 +1,35 @@
 package com.example.lestock.model;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table
+@Table(name = "stock_movement")
 @Data
 @EntityListeners(AuditingEntityListener.class)
-public class Material {
+public class StockMovement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "minimum_purchase_amount")
-    private Float minimumPurchaseAmount;
+    @Column(name = "movement_type", nullable = false)
+    private MovementType movementType;
 
     @Column
-    private Float price;
+    private Float quantity;
 
     @Column
-    private String description;
+    private Float unit_price;
 
-    @Column(name = "average_delivery_time")
-    private Integer averageDeliveryTime;
+    @Column(nullable = false)
+    private LocalDate movement_date;
 
     @CreatedDate
     @Column(name = "created_date")
@@ -36,20 +40,6 @@ public class Material {
     private LocalDateTime lastModifiedDate;
 
     @ManyToOne
-    @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
-
-    @ManyToOne
-    @JoinColumn(name = "material_type_id")
-    private MaterialType materialType;
-
-    @Transient
-    public Float getPricePerAmount() {
-        if(price == null || minimumPurchaseAmount == null) return null;
-        return price/ minimumPurchaseAmount;
-    }
-
-    @OneToOne(mappedBy = "material")
+    @JoinColumn(name = "stock_id")
     private Stock stock;
-
 }

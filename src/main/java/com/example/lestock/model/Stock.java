@@ -5,27 +5,22 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table
 @Data
 @EntityListeners(AuditingEntityListener.class)
-public class Material {
+public class Stock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "minimum_purchase_amount")
-    private Float minimumPurchaseAmount;
+    @Column
+    private Float currentQuantity;
 
     @Column
-    private Float price;
-
-    @Column
-    private String description;
-
-    @Column(name = "average_delivery_time")
-    private Integer averageDeliveryTime;
+    private Float averageCost;
 
     @CreatedDate
     @Column(name = "created_date")
@@ -35,21 +30,12 @@ public class Material {
     @Column(name = "last_modified_date")
     private LocalDateTime lastModifiedDate;
 
-    @ManyToOne
-    @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
+    @OneToMany(mappedBy = "stock")
+    private List<StockMovement> stockMovements;
 
-    @ManyToOne
-    @JoinColumn(name = "material_type_id")
-    private MaterialType materialType;
+    @OneToOne
+    @JoinColumn(name = "material_id")
+    private Material material;
 
-    @Transient
-    public Float getPricePerAmount() {
-        if(price == null || minimumPurchaseAmount == null) return null;
-        return price/ minimumPurchaseAmount;
-    }
-
-    @OneToOne(mappedBy = "material")
-    private Stock stock;
 
 }
