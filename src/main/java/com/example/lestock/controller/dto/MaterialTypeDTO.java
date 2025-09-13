@@ -8,6 +8,7 @@ public record MaterialTypeDTO(
         @NotBlank(message = "Can't be blank")
         String name,
         @NotBlank(message = "Can't be blank")
-        String metricUnit
+        String metricUnit,
+        String brand
 ) {
 }

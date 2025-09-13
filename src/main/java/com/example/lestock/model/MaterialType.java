@@ -22,8 +22,11 @@ public class MaterialType
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "metric_unit", nullable = false)
+    @Column(name = "metric_unit", nullable = false, length = 100)
     private String metricUnit;
+
+    @Column(length = 100)
+    private String brand;
 
     @CreatedDate
     @Column(name = "created_date")

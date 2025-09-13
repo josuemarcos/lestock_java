@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -64,7 +63,6 @@ public class MaterialController implements GenericController {
                     Optional<MaterialType> materialType = materialTypeService.getMaterialType(materialDTO.IdMaterialType());
                     material.setSupplier(supplier.get());
                     material.setMaterialType(materialType.get());
-                    material.setBrand(materialDTO.brand());
                     material.setDescription(materialDTO.description());
                     material.setAverageDeliveryTime(materialDTO.averageDeliveryTime());
                     material.setMinimumPurchaseAmount(materialDTO.minimumPurchaseAmount());

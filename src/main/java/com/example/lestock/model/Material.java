@@ -24,9 +24,6 @@ public class Material {
     @Column
     private String description;
 
-    @Column
-    private String brand;
-
     @Column(name = "average_delivery_time")
     private Integer averageDeliveryTime;
 

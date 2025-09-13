@@ -8,7 +8,6 @@ public record SaveMaterialDTO(
         Float minimumPurchaseAmount,
         Float price,
         String description,
-        String brand,
         Integer averageDeliveryTime,
         @NotNull(message = "Can't be blank!")
         Long IdSupplier,

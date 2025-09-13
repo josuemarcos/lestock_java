@@ -4,7 +4,6 @@ import com.example.lestock.controller.dto.SaveMaterialDTO;
 import com.example.lestock.dao.MaterialTypeDAO;
 import com.example.lestock.dao.SupplierDAO;
 import com.example.lestock.model.Material;
-import lombok.RequiredArgsConstructor;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
