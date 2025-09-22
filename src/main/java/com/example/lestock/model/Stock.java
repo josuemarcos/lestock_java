@@ -36,6 +36,4 @@ public class Stock {
     @OneToOne
     @JoinColumn(name = "material_id")
     private Material material;
-
-
 }
