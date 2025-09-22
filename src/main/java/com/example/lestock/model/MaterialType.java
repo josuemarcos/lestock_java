@@ -1,6 +1,7 @@
 package com.example.lestock.model;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -10,7 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "material_type")
-@Data
+@Getter
+@Setter
 @ToString(exclude = {"materials"})
 @EntityListeners(AuditingEntityListener.class)
 public class MaterialType

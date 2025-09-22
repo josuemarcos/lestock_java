@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = "spring", uses = MaterialMapper.class)
+@Mapper(componentModel = "spring", uses = {MaterialMapper.class,  })
 public abstract class StockMapper {
     @Autowired
     MaterialDAO materialDAO;

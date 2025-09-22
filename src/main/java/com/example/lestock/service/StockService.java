@@ -4,6 +4,8 @@ import com.example.lestock.model.Stock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class StockService {
@@ -11,5 +13,8 @@ public class StockService {
 
     public void saveStock(Stock stock) {
         stockDAO.save(stock);
+    }
+    public List<Stock> getAllStocks() {
+        return stockDAO.findAll();
     }
 }
