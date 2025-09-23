@@ -39,6 +39,6 @@ public class Stock {
     private List<StockMovement> stockMovements;
 
     @OneToOne
-    @JoinColumn(name = "material_id")
-    private Material material;
+    @JoinColumn(name = "material_type_id")
+    private MaterialType materialType;
 }

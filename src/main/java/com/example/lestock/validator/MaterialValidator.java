@@ -25,14 +25,14 @@ public class MaterialValidator implements ConstraintValidator<ValidMaterial, Sav
         boolean valid = true;
         context.disableDefaultConstraintViolation();
 
-        if(isSupplierRegistered(saveMaterialDTO)) {
+        if(supplierNotRegistered(saveMaterialDTO)) {
             context.buildConstraintViolationWithTemplate("Invalid Supplier")
                     .addPropertyNode("IdSupplier")
                     .addConstraintViolation();
             valid = false;
         }
 
-        if(isMaterialTypeRegistered(saveMaterialDTO)) {
+        if(materialTypeNotRegistered(saveMaterialDTO)) {
             context.buildConstraintViolationWithTemplate("Invalid Material Type")
                     .addPropertyNode("IdMaterialType")
                     .addConstraintViolation();
@@ -40,10 +40,12 @@ public class MaterialValidator implements ConstraintValidator<ValidMaterial, Sav
         }
         return valid;
     }
-    private Boolean isSupplierRegistered(SaveMaterialDTO materialDTO) {
+    private Boolean supplierNotRegistered(SaveMaterialDTO materialDTO) {
+        if(materialDTO.IdSupplier() == null) return false;
         return supplierDAO.findById(materialDTO.IdSupplier()).isEmpty();
     }
-    private Boolean isMaterialTypeRegistered(SaveMaterialDTO materialDTO) {
+    private Boolean materialTypeNotRegistered(SaveMaterialDTO materialDTO) {
+        if(materialDTO.IdMaterialType() == null) return false;
         return materialTypeDAO.findById(materialDTO.IdMaterialType()).isEmpty();
     }
 

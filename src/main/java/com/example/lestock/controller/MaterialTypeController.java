@@ -1,8 +1,13 @@
 package com.example.lestock.controller;
+import com.example.lestock.controller.dto.GetStockDTO;
 import com.example.lestock.controller.dto.MaterialTypeDTO;
+import com.example.lestock.controller.dto.SaveStockDTO;
 import com.example.lestock.controller.mapper.MaterialTypeMapper;
+import com.example.lestock.controller.mapper.StockMapper;
 import com.example.lestock.model.MaterialType;
+import com.example.lestock.model.Stock;
 import com.example.lestock.service.MaterialTypeService;
+import com.example.lestock.service.StockService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,13 +15,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-
 @RestController
 @RequestMapping("/material-types")
 @RequiredArgsConstructor
 public class MaterialTypeController implements GenericController{
     private final MaterialTypeMapper materialTypeMapper;
     private final MaterialTypeService materialTypeService;
+    private final StockMapper stockMapper;
+    private final StockService stockService;
     @PostMapping
     ResponseEntity<Void> saveMaterialType(@RequestBody @Valid MaterialTypeDTO materialTypeDTO) {
         MaterialType materialType = materialTypeMapper.toEntity(materialTypeDTO);
@@ -66,6 +72,27 @@ public class MaterialTypeController implements GenericController{
                             return ResponseEntity.noContent().build();
                         }
                 ).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/{id}/stock")
+    ResponseEntity<Void> saveStock(@PathVariable Long id, @RequestBody SaveStockDTO saveStockDTO) {
+        SaveStockDTO stockDTO = new SaveStockDTO(saveStockDTO.currentQuantity(), saveStockDTO.averageCost(), id);
+        Stock stockEntity = stockMapper.toEntity(stockDTO);
+        stockService.saveStock(stockEntity);
+        URI location = generateHeaderLocation(stockEntity.getId());
+        return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping("/{id}/stock")
+    ResponseEntity<GetStockDTO> getStock(@PathVariable Long id) {
+        return materialTypeService.getMaterialType(id)
+                .map(materialType -> {
+                    return stockService.getStockByMaterialType(materialType)
+                            .map(stock -> {
+                                GetStockDTO stockDTO = stockMapper.toDTO(stock);
+                                return ResponseEntity.ok(stockDTO);
+                            }).orElseGet(() -> ResponseEntity.notFound().build());
+                }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 }

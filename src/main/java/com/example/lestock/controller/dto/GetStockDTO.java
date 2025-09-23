@@ -4,6 +4,6 @@ public record GetStockDTO(
         Long id,
         Float currentQuantity,
         Float averageCost,
-        GetMaterialDTO material
+        MaterialTypeDTO materialType
 ) {
 }

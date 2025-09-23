@@ -40,4 +40,7 @@ public class MaterialType
 
     @OneToMany(mappedBy = "materialType")
     private List<Material> materials;
+
+    @OneToOne(mappedBy = "materialType")
+    private Stock stock;
 }

@@ -48,23 +48,14 @@ public class SupplierController implements GenericController {
 
     @PutMapping("{id}")
     public ResponseEntity<Object> updateSupplier(@PathVariable Long id, @RequestBody @Valid SupplierDTO supplierDTO){
-        SupplierDTO supplierDTOWithId = new SupplierDTO(
-                id,
-                supplierDTO.name(),
-                supplierDTO.description(),
-                supplierDTO.contact(),
-                supplierDTO.socialMedia(),
-                supplierDTO.address()
-        );
-
         return supplierService.getSupplierById(id)
                 .map(
                         supplier -> {
-                            supplier.setName(supplierDTOWithId.name());
-                            supplier.setAddress(supplierDTOWithId.address());
-                            supplier.setContact(supplierDTOWithId.contact());
-                            supplier.setDescription(supplierDTOWithId.description());
-                            supplier.setSocialMedia(supplierDTOWithId.socialMedia());
+                            supplier.setName(supplierDTO.name());
+                            supplier.setAddress(supplierDTO.address());
+                            supplier.setContact(supplierDTO.contact());
+                            supplier.setDescription(supplierDTO.description());
+                            supplier.setSocialMedia(supplierDTO.socialMedia());
                             supplierService.updateSupplier(supplier);
                             return ResponseEntity.ok().build();
                         }

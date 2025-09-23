@@ -53,7 +53,4 @@ public class Material {
         return price/ minimumPurchaseAmount;
     }
 
-    @OneToOne(mappedBy = "material")
-    private Stock stock;
-
 }
