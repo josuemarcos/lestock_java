@@ -95,4 +95,13 @@ public class MaterialTypeController implements GenericController{
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/stock")
+    ResponseEntity<List<GetStockDTO>> getAllStocks() {
+        List<GetStockDTO> stockDTOS = stockService.getAllStocks()
+                .stream()
+                .map(stockMapper::toDTO)
+                .toList();
+        return ResponseEntity.ok(stockDTOS);
+    }
+
 }

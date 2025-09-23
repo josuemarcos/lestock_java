@@ -21,7 +21,7 @@ public class GlobalExcepionHandler {
         List<FieldErrorDTO> fieldErrorDTOS = fieldErrors
                 .stream()
                 .map(
-                        fe -> new FieldErrorDTO(fe.getField(), fe.getDefaultMessage())
+                        fe -> new FieldErrorDTO(fe.getField(), fe.getDefaultMessage(), fe.getCode())
                 ).toList();
         return new ResponseErrorDTO(
                 HttpStatus.UNPROCESSABLE_ENTITY.value(),
