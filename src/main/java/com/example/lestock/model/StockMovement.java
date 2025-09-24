@@ -1,5 +1,4 @@
 package com.example.lestock.model;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +6,6 @@ import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -29,11 +27,11 @@ public class StockMovement {
     @Column
     private Float quantity;
 
-    @Column
-    private Float unit_price;
+    @Column(name = "unit_price")
+    private Float unitPrice;
 
-    @Column(nullable = false)
-    private LocalDate movement_date;
+    @Column(nullable = false, name = "movement_date")
+    private LocalDate movementDate;
 
     @CreatedDate
     @Column(name = "created_date")
@@ -46,4 +44,8 @@ public class StockMovement {
     @ManyToOne
     @JoinColumn(name = "stock_id")
     private Stock stock;
+
+    @ManyToOne
+    @JoinColumn(name = "supplier_id")
+    private Supplier supplier;
 }

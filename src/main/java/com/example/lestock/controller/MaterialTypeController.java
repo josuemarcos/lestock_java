@@ -2,11 +2,15 @@ package com.example.lestock.controller;
 import com.example.lestock.controller.dto.GetStockDTO;
 import com.example.lestock.controller.dto.MaterialTypeDTO;
 import com.example.lestock.controller.dto.SaveStockDTO;
+import com.example.lestock.controller.dto.SaveStockMovementDTO;
 import com.example.lestock.controller.mapper.MaterialTypeMapper;
 import com.example.lestock.controller.mapper.StockMapper;
+import com.example.lestock.controller.mapper.StockMovementMapper;
 import com.example.lestock.model.MaterialType;
 import com.example.lestock.model.Stock;
+import com.example.lestock.model.StockMovement;
 import com.example.lestock.service.MaterialTypeService;
+import com.example.lestock.service.StockMovementService;
 import com.example.lestock.service.StockService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +27,8 @@ public class MaterialTypeController implements GenericController{
     private final MaterialTypeService materialTypeService;
     private final StockMapper stockMapper;
     private final StockService stockService;
+    private final StockMovementMapper stockMovementMapper;
+    private final StockMovementService stockMovementService;
     @PostMapping
     ResponseEntity<Void> saveMaterialType(@RequestBody @Valid MaterialTypeDTO materialTypeDTO) {
         MaterialType materialType = materialTypeMapper.toEntity(materialTypeDTO);
@@ -102,6 +108,15 @@ public class MaterialTypeController implements GenericController{
                 .map(stockMapper::toDTO)
                 .toList();
         return ResponseEntity.ok(stockDTOS);
+    }
+
+    @PostMapping("/{id}/stock-movement")
+    ResponseEntity<Void> saveStockMovement(@PathVariable Long id, @RequestBody SaveStockMovementDTO saveStockMovementDTO) {
+        StockMovement stockMovement = stockMovementMapper.toEntity(saveStockMovementDTO);
+        stockMovementService.save(stockMovement);
+        stockMovementService.updateStock(stockMovement);
+        URI location = generateHeaderLocation(stockMovement.getId());
+        return ResponseEntity.created(location).build();
     }
 
 }

@@ -24,4 +24,12 @@ public class StockService {
     public Optional<Stock> getStockByMaterialType(MaterialType materialType) {
         return stockDAO.findByMaterialType(materialType);
     }
+
+    public void updateStock(Stock stock) {
+        stockDAO.save(stock);
+    }
+
+    public Optional<Stock> getStockById(Long id) {
+        return stockDAO.findById(id);
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.lestock.model;
 
 public enum MovementType {
-    IN,
-    OUT
+    PURCHASE,
+    SALE,
+    ADJUSTMENT
 }
