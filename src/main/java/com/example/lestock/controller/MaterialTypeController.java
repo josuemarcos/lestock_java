@@ -1,8 +1,5 @@
 package com.example.lestock.controller;
-import com.example.lestock.controller.dto.GetStockDTO;
-import com.example.lestock.controller.dto.MaterialTypeDTO;
-import com.example.lestock.controller.dto.SaveStockDTO;
-import com.example.lestock.controller.dto.SaveStockMovementDTO;
+import com.example.lestock.controller.dto.*;
 import com.example.lestock.controller.mapper.MaterialTypeMapper;
 import com.example.lestock.controller.mapper.StockMapper;
 import com.example.lestock.controller.mapper.StockMovementMapper;
@@ -111,13 +108,29 @@ public class MaterialTypeController implements GenericController{
     }
 
     @PostMapping("/{id}/stock-movement")
-    ResponseEntity<Void> saveStockMovement(@PathVariable Long id, @RequestBody SaveStockMovementDTO saveStockMovementDTO) {
-        StockMovement stockMovement = stockMovementMapper.toEntity(saveStockMovementDTO);
-        stockMovementService.updateStock(stockMovement);
-        stockMovementService.save(stockMovement);
-        URI location = generateHeaderLocation(stockMovement.getId());
-        return ResponseEntity.created(location).build();
+    ResponseEntity<Object> saveStockMovement(@PathVariable Long id, @RequestBody SaveStockMovementDTO saveStockMovementDTO) {
+       return materialTypeService.getMaterialType(id)
+                .map(materialType -> {
+                    if(materialType.getStock() == null) {
+                        SaveStockDTO stockDTO = new SaveStockDTO((float) 0, (float) 0, id);
+                        saveStock(id, stockDTO);
+                    }
+                    StockMovement stockMovement = stockMovementMapper.toEntity(saveStockMovementDTO);
+                    stockMovementService.updateStock(stockMovement, materialType);
+                    stockMovementService.save(stockMovement);
+                    URI location = generateHeaderLocation(stockMovement.getId());
+                    return ResponseEntity.created(location).build();
+                } ).orElseGet(() -> ResponseEntity.notFound().build());
+
     }
-    
+
+    @GetMapping("/stock-movements")
+    ResponseEntity<List<GetStockMovementDTO>> getAllStockMovements() {
+        List<GetStockMovementDTO> stockMovementDTOS = stockMovementService.getAllStockMovements()
+                .stream()
+                .map(stockMovementMapper::toDTO)
+                .toList();
+        return ResponseEntity.ok(stockMovementDTOS);
+    }
 
 }

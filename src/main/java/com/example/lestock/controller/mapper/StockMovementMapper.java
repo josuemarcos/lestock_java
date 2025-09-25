@@ -1,5 +1,5 @@
 package com.example.lestock.controller.mapper;
-import com.example.lestock.controller.dto.GetStockDTO;
+import com.example.lestock.controller.dto.GetStockMovementDTO;
 import com.example.lestock.controller.dto.SaveStockMovementDTO;
 import com.example.lestock.dao.StockDAO;
 import com.example.lestock.dao.SupplierDAO;
@@ -18,7 +18,7 @@ public abstract class StockMovementMapper {
     SupplierDAO supplierDAO;
 
     public abstract StockMovement toEntity(SaveStockMovementDTO saveStockMovementDTO);
-    public abstract GetStockDTO toDTO(StockMovement stockMovement);
+    public abstract GetStockMovementDTO toDTO(StockMovement stockMovement);
 
     @Mappings({
             @Mapping(target ="stock",ignore =true),
