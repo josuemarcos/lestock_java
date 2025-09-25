@@ -113,10 +113,11 @@ public class MaterialTypeController implements GenericController{
     @PostMapping("/{id}/stock-movement")
     ResponseEntity<Void> saveStockMovement(@PathVariable Long id, @RequestBody SaveStockMovementDTO saveStockMovementDTO) {
         StockMovement stockMovement = stockMovementMapper.toEntity(saveStockMovementDTO);
-        stockMovementService.save(stockMovement);
         stockMovementService.updateStock(stockMovement);
+        stockMovementService.save(stockMovement);
         URI location = generateHeaderLocation(stockMovement.getId());
         return ResponseEntity.created(location).build();
     }
+    
 
 }

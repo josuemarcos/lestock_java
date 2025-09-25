@@ -14,6 +14,7 @@ public class StockMovementService {
     private final StockMovementDAO stockMovementDAO;
     private final StockService stockService;
 
+
     public Optional<StockMovement> getStockMovement(Long id) {
         return stockMovementDAO.findById(id);
     }
@@ -26,33 +27,41 @@ public class StockMovementService {
         switch (operation) {
             case "PURCHASE" -> incrementStock(stockMovement);
             case "SALE" -> decrementStock(stockMovement);
-            case "ADJUSTMENT" -> {
-                undoStockMovement(stockMovement);
-                save(stockMovement);
-            }
+            case "ADJUSTMENT" -> undoStockMovement(stockMovement);
         }
     }
 
     private void incrementStock(StockMovement stockMovement) {
-        Stock stock = stockMovement.getStock();
-        float oldTotalCost = stock.getCurrentQuantity() * stock.getAverageCost();
-        float newTotalCost = stockMovement.getQuantity() * stockMovement.getUnitPrice();
-        stock.setAverageCost((oldTotalCost + newTotalCost) / (stock.getCurrentQuantity() + stockMovement.getQuantity()));
-        stock.setCurrentQuantity(stock.getCurrentQuantity() + stockMovement.getQuantity());
+        stockService.getStockById(stockMovement.getStock().getId())
+                .map( stock -> {
+                    float oldTotalCost = stock.getCurrentQuantity() * stock.getAverageCost();
+                    float newTotalCost = stockMovement.getQuantity() * stockMovement.getUnitPrice();
+                    stock.setAverageCost((oldTotalCost + newTotalCost) / (stock.getCurrentQuantity() + stockMovement.getQuantity()));
+                    stock.setCurrentQuantity(stock.getCurrentQuantity() + stockMovement.getQuantity());
+                    stockService.updateStock(stock);
+                    return null;
+                });
     }
     private void decrementStock(StockMovement stockMovement) {
-        Stock stock = stockMovement.getStock();
-        stock.setCurrentQuantity(stock.getCurrentQuantity() - stockMovement.getQuantity());
+        stockService.getStockById(stockMovement.getStock().getId())
+                .map(stock -> {
+                    stock.setCurrentQuantity(stock.getCurrentQuantity() - stockMovement.getQuantity());
+                    stockService.updateStock(stock);
+                    return null;
+                });
     }
 
     private void undoStockMovement(StockMovement stockMovement) {
-        Stock stock = stockService.getStockById(stockMovement.getStock().getId()).orElse(null);
-        if(stock != null) {
-            float oldQuantity = stock.getCurrentQuantity() - stockMovement.getQuantity();
-            float oldAverageCost = (stock.getAverageCost()*stock.getCurrentQuantity() - stockMovement.getQuantity()*stockMovement.getUnitPrice())/oldQuantity;
-            stock.setCurrentQuantity(oldAverageCost);
-            stock.setAverageCost(oldAverageCost);
-            stockService.updateStock(stock);
-        }
+        stockService.getStockById(stockMovement.getStock().getId())
+                .map(stock -> {
+                    float oldQuantity = stock.getCurrentQuantity() - stockMovement.getQuantity();
+                    float oldTotalCost = stock.getAverageCost()*stock.getCurrentQuantity();
+                    float newTotalCost = stockMovement.getUnitPrice()*stockMovement.getQuantity();
+                    float oldAverageCost = (oldTotalCost - newTotalCost)/oldQuantity;
+                    stock.setCurrentQuantity(oldQuantity);
+                    stock.setAverageCost(oldAverageCost);
+                    stockService.updateStock(stock);
+                    return null;
+                });
     }
 }
