@@ -78,12 +78,15 @@ public class MaterialTypeController implements GenericController{
     }
 
     @PostMapping("/{id}/stock")
-    ResponseEntity<Void> saveStock(@PathVariable Long id, @RequestBody SaveStockDTO saveStockDTO) {
-        SaveStockDTO stockDTO = new SaveStockDTO(saveStockDTO.currentQuantity(), saveStockDTO.averageCost(), id);
-        Stock stockEntity = stockMapper.toEntity(stockDTO);
-        stockService.saveStock(stockEntity);
-        URI location = generateHeaderLocation(stockEntity.getId());
-        return ResponseEntity.created(location).build();
+    ResponseEntity<Object> saveStock(@PathVariable Long id, @RequestBody SaveStockDTO saveStockDTO) {
+        return materialTypeService.getMaterialType(id)
+                .map(materialType -> {
+                    Stock stock = stockMapper.toEntity(saveStockDTO);
+                    stock.setMaterialType(materialType);
+                    stockService.saveStock(stock);
+                    URI location = generateHeaderLocation(stock.getId());
+                    return ResponseEntity.created(location).build();
+                }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}/stock")
@@ -112,7 +115,7 @@ public class MaterialTypeController implements GenericController{
        return materialTypeService.getMaterialType(id)
                 .map(materialType -> {
                     if(materialType.getStock() == null) {
-                        SaveStockDTO stockDTO = new SaveStockDTO((float) 0, (float) 0, id);
+                        SaveStockDTO stockDTO = new SaveStockDTO((float) 0, (float) 0);
                         saveStock(id, stockDTO);
                     }
                     StockMovement stockMovement = stockMovementMapper.toEntity(saveStockMovementDTO);
