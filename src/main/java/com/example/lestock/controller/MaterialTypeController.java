@@ -119,6 +119,7 @@ public class MaterialTypeController implements GenericController{
                         saveStock(id, stockDTO);
                     }
                     StockMovement stockMovement = stockMovementMapper.toEntity(saveStockMovementDTO);
+                    stockMovement.setStock(materialType.getStock());
                     stockMovementService.updateStock(stockMovement, materialType);
                     stockMovementService.save(stockMovement);
                     URI location = generateHeaderLocation(stockMovement.getId());
