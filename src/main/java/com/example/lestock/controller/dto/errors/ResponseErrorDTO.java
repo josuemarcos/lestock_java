@@ -1,4 +1,4 @@
-package com.example.lestock.controller.dto;
+package com.example.lestock.controller.dto.errors;
 
 import java.util.List;
 

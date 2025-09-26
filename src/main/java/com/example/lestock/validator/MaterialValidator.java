@@ -1,5 +1,6 @@
 package com.example.lestock.validator;
 import com.example.lestock.controller.dto.SaveMaterialDTO;
+import com.example.lestock.controller.dto.errors.FieldErrorDTO;
 import com.example.lestock.dao.MaterialDAO;
 import com.example.lestock.dao.MaterialTypeDAO;
 import com.example.lestock.dao.SupplierDAO;
@@ -10,6 +11,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -51,7 +53,17 @@ public class MaterialValidator implements ConstraintValidator<ValidMaterial, Sav
 
     public void validateMaterial(Material material) {
         if(isMaterialSaved(material)) {
-            throw new DuplicateRecordException("Material already exists");
+            FieldErrorDTO fieldErrorSupplier = new FieldErrorDTO(
+                    "IdSupplier",
+                    "Material with supplier and material type pair already exists",
+                    "UniquenessBreak"
+            );
+            FieldErrorDTO fieldErrorMaterialType = new FieldErrorDTO(
+                    "IdMaterialType",
+                    "Material with supplier and material type pair already exists",
+                    "UniquenessBreak"
+            );
+            throw new DuplicateRecordException("Material already exists", List.of(fieldErrorSupplier, fieldErrorMaterialType));
         }
     }
 

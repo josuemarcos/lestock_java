@@ -1,5 +1,6 @@
 package com.example.lestock.validator;
 import com.example.lestock.controller.dto.MaterialTypeDTO;
+import com.example.lestock.controller.dto.errors.FieldErrorDTO;
 import com.example.lestock.controller.mapper.MaterialTypeMapper;
 import com.example.lestock.dao.MaterialTypeDAO;
 import com.example.lestock.exceptions.DuplicateRecordException;
@@ -8,6 +9,8 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,7 +21,17 @@ public class MaterialTypeValidator  {
     public void validateMaterialType(MaterialType materialType) {
 
         if(isMaterialTypeSaved(materialType)) {
-            throw new DuplicateRecordException("Material type already exists");
+            FieldErrorDTO fieldErrorName = new FieldErrorDTO(
+                    "name",
+                    "Material type with name and brand pair already exists",
+                    "UniquenessBreak"
+            );
+            FieldErrorDTO fieldErrorBrand = new FieldErrorDTO(
+                    "brand",
+                    "Material type with name and brand pair already exists",
+                    "UniquenessBreak"
+            );
+            throw new DuplicateRecordException("Material type already exists", List.of(fieldErrorName, fieldErrorBrand));
         }
     }
 

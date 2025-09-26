@@ -1,7 +1,6 @@
 package com.example.lestock.controller.common;
-
-import com.example.lestock.controller.dto.FieldErrorDTO;
-import com.example.lestock.controller.dto.ResponseErrorDTO;
+import com.example.lestock.controller.dto.errors.FieldErrorDTO;
+import com.example.lestock.controller.dto.errors.ResponseErrorDTO;
 import com.example.lestock.exceptions.DuplicateRecordException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -35,7 +34,7 @@ public class GlobalExcepionHandler {
         return new ResponseErrorDTO(
                 HttpStatus.UNPROCESSABLE_ENTITY.value(),
                 e.getMessage(),
-                List.of()
+                e.getFieldErrors()
         );
     }
 }
