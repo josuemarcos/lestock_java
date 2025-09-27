@@ -1,5 +1,4 @@
 package com.example.lestock.controller.dto;
-
 import com.example.lestock.model.MovementType;
 import jakarta.validation.constraints.NotNull;
 

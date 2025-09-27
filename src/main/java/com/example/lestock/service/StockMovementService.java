@@ -32,7 +32,6 @@ public class StockMovementService {
         switch (operation) {
             case "PURCHASE" -> incrementStock(stockMovement,  materialType);
             case "SALE" -> decrementStock(stockMovement,  materialType);
-            case "ADJUSTMENT" -> undoStockMovement(stockMovement, materialType);
         }
     }
 
@@ -56,7 +55,7 @@ public class StockMovementService {
                 });
     }
 
-    private void undoStockMovement(StockMovement stockMovement,  MaterialType  materialType) {
+    public void undoStockMovement(StockMovement stockMovement,  MaterialType  materialType) {
         stockService.getStockByMaterialType(materialType)
                 .map(stock -> {
                     float oldQuantity = stock.getCurrentQuantity() - stockMovement.getQuantity();

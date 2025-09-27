@@ -137,4 +137,18 @@ public class MaterialTypeController implements GenericController{
         return ResponseEntity.ok(stockMovementDTOS);
     }
 
+    @PutMapping("/{idMaterialType}/stock-movement/{idStockMovement}")
+    ResponseEntity<Object> adjustStockMovement(@PathVariable Long idMaterialType, @PathVariable Long idStockMovement, @RequestBody SaveStockMovementDTO saveStockMovementDTO) {
+       return  materialTypeService.getMaterialType(idMaterialType)
+                .map(materialType -> stockMovementService.getStockMovement(idStockMovement)
+                        .map(stockMovement -> {
+                            stockMovementService.undoStockMovement(stockMovement, materialType);
+                            stockMovementMapper.updateStockMovement(stockMovement, saveStockMovementDTO);
+                            stockMovementService.updateStock(stockMovement, materialType);
+                            stockMovementService.save(stockMovement);
+                            return ResponseEntity.ok().build();
+                        }).orElseGet(() -> ResponseEntity.notFound().build()))
+               .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 }
