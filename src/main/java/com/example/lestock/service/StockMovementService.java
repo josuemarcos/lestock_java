@@ -26,6 +26,9 @@ public class StockMovementService {
     public List<StockMovement> getAllStockMovements() {
         return stockMovementDAO.findAll();
     }
+    public List<StockMovement> getAllStockMovementsByStock(Stock stock) {
+        return stockMovementDAO.findByStock(stock);
+    }
 
     public void updateStock(StockMovement stockMovement, MaterialType materialType) {
         String operation = stockMovement.getMovementType().toString();
