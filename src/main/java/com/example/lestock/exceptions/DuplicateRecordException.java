@@ -1,8 +1,6 @@
 package com.example.lestock.exceptions;
-
 import com.example.lestock.controller.dto.errors.FieldErrorDTO;
 import lombok.Getter;
-
 import java.util.List;
 
 @Getter

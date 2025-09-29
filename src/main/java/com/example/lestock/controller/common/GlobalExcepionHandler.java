@@ -2,6 +2,7 @@ package com.example.lestock.controller.common;
 import com.example.lestock.controller.dto.errors.FieldErrorDTO;
 import com.example.lestock.controller.dto.errors.ResponseErrorDTO;
 import com.example.lestock.exceptions.DuplicateRecordException;
+import com.example.lestock.exceptions.InvalidRecordException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -35,6 +36,16 @@ public class GlobalExcepionHandler {
     @ExceptionHandler(DuplicateRecordException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ResponseErrorDTO handleDuplicateRecordException(DuplicateRecordException e) {
+        return new ResponseErrorDTO(
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                e.getMessage(),
+                e.getFieldErrors()
+        );
+    }
+
+    @ExceptionHandler(InvalidRecordException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ResponseErrorDTO handleInvalidRecordException(InvalidRecordException e) {
         return new ResponseErrorDTO(
                 HttpStatus.UNPROCESSABLE_ENTITY.value(),
                 e.getMessage(),

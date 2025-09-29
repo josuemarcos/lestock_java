@@ -4,6 +4,7 @@ import com.example.lestock.dao.StockMovementDAO;
 import com.example.lestock.model.MaterialType;
 import com.example.lestock.model.Stock;
 import com.example.lestock.model.StockMovement;
+import com.example.lestock.validator.StockMovementValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +16,14 @@ import java.util.Optional;
 public class StockMovementService {
     private final StockMovementDAO stockMovementDAO;
     private final StockService stockService;
+    private final StockMovementValidator stockMovementValidator;
 
 
     public Optional<StockMovement> getStockMovement(Long id) {
         return stockMovementDAO.findById(id);
     }
     public void save(StockMovement stockMovement) {
+        stockMovementValidator.validateStockMovement(stockMovement);
         stockMovementDAO.save(stockMovement);
     }
     public List<StockMovement> getAllStockMovements() {
@@ -31,6 +34,7 @@ public class StockMovementService {
     }
 
     public void updateStock(StockMovement stockMovement, MaterialType materialType) {
+        stockMovementValidator.validateStockMovement(stockMovement);
         String operation = stockMovement.getMovementType().toString();
         switch (operation) {
             case "PURCHASE" -> incrementStock(stockMovement,  materialType);
@@ -59,6 +63,7 @@ public class StockMovementService {
     }
 
     public void undoStockMovement(StockMovement stockMovement,  MaterialType  materialType) {
+        stockMovementValidator.validateStockMovement(stockMovement);
         stockService.getStockByMaterialType(materialType)
                 .map(stock -> {
                     float oldQuantity = stock.getCurrentQuantity() - stockMovement.getQuantity();
