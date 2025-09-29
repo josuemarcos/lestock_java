@@ -111,7 +111,7 @@ public class MaterialTypeController implements GenericController{
     }
 
     @PostMapping("/{id}/stock-movement")
-    ResponseEntity<Object> saveStockMovement(@PathVariable Long id, @RequestBody SaveStockMovementDTO saveStockMovementDTO) {
+    ResponseEntity<Object> saveStockMovement(@PathVariable Long id, @RequestBody @Valid SaveStockMovementDTO saveStockMovementDTO) {
        return materialTypeService.getMaterialType(id)
                 .map(materialType -> {
                     if(materialType.getStock() == null) {
@@ -151,7 +151,7 @@ public class MaterialTypeController implements GenericController{
     }
 
     @PutMapping("/{idMaterialType}/stock-movement/{idStockMovement}")
-    ResponseEntity<Object> adjustStockMovement(@PathVariable Long idMaterialType, @PathVariable Long idStockMovement, @RequestBody SaveStockMovementDTO saveStockMovementDTO) {
+    ResponseEntity<Object> adjustStockMovement(@PathVariable Long idMaterialType, @PathVariable Long idStockMovement, @RequestBody @Valid SaveStockMovementDTO saveStockMovementDTO) {
        return  materialTypeService.getMaterialType(idMaterialType)
                 .map(materialType -> stockMovementService.getStockMovement(idStockMovement)
                         .map(stockMovement -> {
