@@ -68,7 +68,7 @@ public class GlobalExcepionHandler {
                 String message = String.format("Invalid value '%s' for field '%s'. Allowed values: '%s",
                         ife.getValue(), fieldName, allowedValues);
                 fields = List.of(
-                        new FieldErrorDTO(fieldName, message, "InvalidEnum")
+                        new FieldErrorDTO(fieldName, message, "InvalidValue")
                 );
             }
         }

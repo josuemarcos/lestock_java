@@ -21,11 +21,22 @@ public class StockMovementValidator  {
             );
             throw new InvalidRecordException("Invalid quantity", List.of(fieldError));
         }
+        if(isUnitPriceInValid(stockMovement)) {
+            FieldErrorDTO fieldError = new FieldErrorDTO(
+                    "unitPrice",
+                    "Unit price is required for purchase operation",
+                    "NotNull"
+            );
+            throw new InvalidRecordException("Invalid unitPrice", List.of(fieldError));
+        }
     }
 
     private boolean isQuantityInvalid(StockMovement stockMovement) {
         return stockMovement.getMovementType().equals(MovementType.SALE)
                 && stockMovement.getQuantity() > stockMovement.getStock().getCurrentQuantity();
+    }
+    private boolean isUnitPriceInValid(StockMovement stockMovement) {
+        return stockMovement.getMovementType().equals(MovementType.PURCHASE) && stockMovement.getUnitPrice() == null;
     }
 
 
