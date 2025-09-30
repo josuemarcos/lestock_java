@@ -3,13 +3,25 @@ services:
     image: postgres:15
     container_name: lestock_db_container
     environment:
-      POSTGRES_DB: lestock_db
-      POSTGRES_USER: lestock
-      POSTGRES_PASSWORD: pass321
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: lestock_app_container
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/lestock_db
+      SPRING_DATASOURCE_USERNAME: lestock
+      SPRING_DATASOURCE_PASSWORD: pass321
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
 
 volumes:
   postgres_data:
