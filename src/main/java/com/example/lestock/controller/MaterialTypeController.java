@@ -12,6 +12,7 @@ import com.example.lestock.service.StockService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -26,6 +27,8 @@ public class MaterialTypeController implements GenericController{
     private final StockService stockService;
     private final StockMovementMapper stockMovementMapper;
     private final StockMovementService stockMovementService;
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     ResponseEntity<Void> saveMaterialType(@RequestBody @Valid MaterialTypeDTO materialTypeDTO) {
         MaterialType materialType = materialTypeMapper.toEntity(materialTypeDTO);
@@ -34,6 +37,7 @@ public class MaterialTypeController implements GenericController{
         return ResponseEntity.created(location).build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     ResponseEntity<List<MaterialTypeDTO>> getAllMaterialTypes() {
         List<MaterialTypeDTO> materialTypes = materialTypeService.getMaterialTypes()
@@ -43,6 +47,7 @@ public class MaterialTypeController implements GenericController{
         return ResponseEntity.ok(materialTypes);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     ResponseEntity<MaterialTypeDTO> getMaterialType(@PathVariable Long id) {
         return materialTypeService.getMaterialType(id)
@@ -52,6 +57,7 @@ public class MaterialTypeController implements GenericController{
                 }).orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     ResponseEntity<Object> updateMaterialType(@RequestBody @Valid MaterialTypeDTO materialTypeDTO, @PathVariable Long id) {
         return materialTypeService.getMaterialType(id)
@@ -66,6 +72,7 @@ public class MaterialTypeController implements GenericController{
                 ).orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     ResponseEntity<Object> deleteMaterialType(@PathVariable Long id) {
         return materialTypeService.getMaterialType(id)
@@ -77,6 +84,7 @@ public class MaterialTypeController implements GenericController{
                 ).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/{id}/stock")
     ResponseEntity<Object> saveStock(@PathVariable Long id, @RequestBody @Valid SaveStockDTO saveStockDTO) {
         return materialTypeService.getMaterialType(id)
@@ -89,6 +97,7 @@ public class MaterialTypeController implements GenericController{
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}/stock")
     ResponseEntity<GetStockDTO> getStock(@PathVariable Long id) {
         return materialTypeService.getMaterialType(id)
@@ -101,6 +110,7 @@ public class MaterialTypeController implements GenericController{
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/stock")
     ResponseEntity<List<GetStockDTO>> getAllStocks() {
         List<GetStockDTO> stockDTOS = stockService.getAllStocks()
@@ -110,6 +120,7 @@ public class MaterialTypeController implements GenericController{
         return ResponseEntity.ok(stockDTOS);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/{id}/stock-movement")
     ResponseEntity<Object> saveStockMovement(@PathVariable Long id, @RequestBody @Valid SaveStockMovementDTO saveStockMovementDTO) {
        return materialTypeService.getMaterialType(id)
@@ -128,6 +139,7 @@ public class MaterialTypeController implements GenericController{
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/stock-movement")
     ResponseEntity<List<GetStockMovementDTO>> getAllStockMovements() {
         List<GetStockMovementDTO> stockMovementDTOS = stockMovementService.getAllStockMovements()
@@ -137,6 +149,7 @@ public class MaterialTypeController implements GenericController{
         return ResponseEntity.ok(stockMovementDTOS);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}/stock-movement")
     ResponseEntity<List<GetStockMovementDTO>> getStockMovementsByMaterialType(@PathVariable Long id) {
         return materialTypeService.getMaterialType(id)
@@ -150,6 +163,7 @@ public class MaterialTypeController implements GenericController{
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{idMaterialType}/stock-movement/{idStockMovement}")
     ResponseEntity<Object> adjustStockMovement(@PathVariable Long idMaterialType, @PathVariable Long idStockMovement, @RequestBody @Valid SaveStockMovementDTO saveStockMovementDTO) {
        return  materialTypeService.getMaterialType(idMaterialType)

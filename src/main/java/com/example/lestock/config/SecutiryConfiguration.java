@@ -3,8 +3,8 @@ import com.example.lestock.security.CustomUserDetailsService;
 import com.example.lestock.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecutiryConfiguration {
 
     @Bean
@@ -25,10 +26,6 @@ public class SecutiryConfiguration {
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/users/**").permitAll();
-                    authorize.requestMatchers(HttpMethod.POST, "/material-types/**").hasRole("ADMIN");
-                    authorize.requestMatchers(HttpMethod.PUT, "/material-types/**").hasRole("ADMIN");
-                    authorize.requestMatchers(HttpMethod.DELETE, "/material-types/**").hasRole("ADMIN");
-                    authorize.requestMatchers(HttpMethod.GET).hasRole("USER");
                     authorize.anyRequest().authenticated();
                 }).build();
     }
