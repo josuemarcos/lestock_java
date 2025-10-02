@@ -2,6 +2,7 @@ package com.example.lestock.service;
 
 import com.example.lestock.dao.StockMovementDAO;
 import com.example.lestock.model.MaterialType;
+import com.example.lestock.model.MovementType;
 import com.example.lestock.model.Stock;
 import com.example.lestock.model.StockMovement;
 import com.example.lestock.validator.StockMovementValidator;
@@ -64,16 +65,26 @@ public class StockMovementService {
 
     public void undoStockMovement(StockMovement stockMovement,  MaterialType  materialType) {
         stockMovementValidator.validateStockMovement(stockMovement);
-        stockService.getStockByMaterialType(materialType)
-                .map(stock -> {
-                    float oldQuantity = stock.getCurrentQuantity() - stockMovement.getQuantity();
-                    float oldTotalCost = stock.getAverageCost()*stock.getCurrentQuantity();
-                    float newTotalCost = stockMovement.getUnitPrice()*stockMovement.getQuantity();
-                    float oldAverageCost = (oldTotalCost - newTotalCost)/oldQuantity;
-                    stock.setCurrentQuantity(oldQuantity);
-                    stock.setAverageCost(oldAverageCost);
-                    stockService.updateStock(stock);
-                    return null;
-                });
+        if(stockMovement.getMovementType().equals(MovementType.PURCHASE)) {
+            stockService.getStockByMaterialType(materialType)
+                    .map(stock -> {
+                        float oldQuantity = stock.getCurrentQuantity() - stockMovement.getQuantity();
+                        float oldTotalCost = stock.getAverageCost() * stock.getCurrentQuantity();
+                        float newTotalCost = stockMovement.getUnitPrice() * stockMovement.getQuantity();
+                        float oldAverageCost = (oldTotalCost - newTotalCost) / oldQuantity;
+                        stock.setCurrentQuantity(oldQuantity);
+                        stock.setAverageCost(oldAverageCost);
+                        stockService.updateStock(stock);
+                        return null;
+                    });
+        } else {
+            stockService.getStockByMaterialType(materialType)
+                    .map(stock -> {
+                        float oldQuantity = stock.getCurrentQuantity() + stockMovement.getQuantity();
+                        stock.setCurrentQuantity(oldQuantity);
+                        stockService.updateStock(stock);
+                        return null;
+                    });
+        }
     }
 }
