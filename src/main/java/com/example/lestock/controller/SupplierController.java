@@ -6,6 +6,7 @@ import com.example.lestock.service.SupplierService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
@@ -17,6 +18,7 @@ public class SupplierController implements GenericController {
     private final SupplierService supplierService;
     private final SupplierMapper supplierMapper;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Void> saveSupplier(@RequestBody @Valid SupplierDTO supplierDTO) {
         Supplier supplierEntity = supplierMapper.toEntity(supplierDTO);
@@ -25,6 +27,7 @@ public class SupplierController implements GenericController {
         return ResponseEntity.created(location).build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     public ResponseEntity<List<SupplierDTO>> getSuppliers(){
         List<SupplierDTO> suppliers = supplierService.getSuppliers()
@@ -34,6 +37,7 @@ public class SupplierController implements GenericController {
         return ResponseEntity.ok(suppliers);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("{id}")
     public ResponseEntity<SupplierDTO> getSupplier(@PathVariable Long id){
         return supplierService.getSupplierById(id)
@@ -46,6 +50,7 @@ public class SupplierController implements GenericController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("{id}")
     public ResponseEntity<Object> updateSupplier(@PathVariable Long id, @RequestBody @Valid SupplierDTO supplierDTO){
         return supplierService.getSupplierById(id)
@@ -62,6 +67,7 @@ public class SupplierController implements GenericController {
                 ).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("{id}")
     public ResponseEntity<Object> deleteSupplier(@PathVariable Long id) {
         return supplierService.getSupplierById(id)
