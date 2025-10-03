@@ -41,8 +41,6 @@ public class StockMovementService {
             case "PURCHASE" -> incrementStock(stockMovement,  materialType);
             case "SALE" -> decrementStock(stockMovement,  materialType);
         }
-        User user = securityService.getLoggedUser();
-        materialType.getStock().setUserId(user.getId());
     }
 
     private void incrementStock(StockMovement stockMovement, MaterialType  materialType) {
