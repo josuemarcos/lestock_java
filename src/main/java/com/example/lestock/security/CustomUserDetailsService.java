@@ -1,5 +1,4 @@
 package com.example.lestock.security;
-
 import com.example.lestock.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
