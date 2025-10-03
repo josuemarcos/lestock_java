@@ -41,4 +41,7 @@ public class Stock {
     @OneToOne
     @JoinColumn(name = "material_type_id")
     private MaterialType materialType;
+
+    @Column(name = "user_id")
+    private Long userId;
 }

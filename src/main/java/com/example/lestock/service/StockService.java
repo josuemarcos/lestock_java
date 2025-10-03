@@ -3,6 +3,8 @@ import com.example.lestock.dao.StockDAO;
 import com.example.lestock.model.Material;
 import com.example.lestock.model.MaterialType;
 import com.example.lestock.model.Stock;
+import com.example.lestock.model.User;
+import com.example.lestock.security.SecurityService;
 import com.example.lestock.validator.StockValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,9 +17,12 @@ import java.util.Optional;
 public class StockService {
     private final StockDAO stockDAO;
     private final StockValidator stockValidator;
+    private final SecurityService securityService;
 
     public void saveStock(Stock stock) {
         stockValidator.validateStock(stock);
+        User user = securityService.getLoggedUser();
+        stock.setUserId(user.getId());
         stockDAO.save(stock);
     }
     public List<Stock> getAllStocks() {
@@ -30,6 +35,8 @@ public class StockService {
 
     public void updateStock(Stock stock) {
         stockValidator.validateStock(stock);
+        User user = securityService.getLoggedUser();
+        stock.setUserId(user.getId());
         stockDAO.save(stock);
     }
 
