@@ -48,4 +48,7 @@ public class StockMovement {
     @ManyToOne
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
+
+    @Column(name = "user_id")
+    private Long userId;
 }
