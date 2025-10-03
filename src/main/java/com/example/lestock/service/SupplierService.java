@@ -1,6 +1,8 @@
 package com.example.lestock.service;
 import com.example.lestock.dao.SupplierDAO;
 import com.example.lestock.model.Supplier;
+import com.example.lestock.model.User;
+import com.example.lestock.security.SecurityService;
 import com.example.lestock.validator.SupplierValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import java.util.Optional;
 public class SupplierService {
     private final SupplierDAO supplierDAO;
     private final SupplierValidator supplierValidator;
+    private final SecurityService securityService;
 
     public List<Supplier> getSuppliers() {
         return supplierDAO.findAll();
@@ -19,6 +22,8 @@ public class SupplierService {
 
     public void saveSupplier(Supplier supplier) {
         supplierValidator.validateSupplier(supplier);
+        User user = securityService.getLoggedUser();
+        supplier.setUserId(user.getId());
         supplierDAO.save(supplier);
     }
 
@@ -28,6 +33,8 @@ public class SupplierService {
 
     public void updateSupplier(Supplier supplier) {
         supplierValidator.validateSupplier(supplier);
+        User user = securityService.getLoggedUser();
+        supplier.setUserId(user.getId());
         supplierDAO.save(supplier);
     }
 
