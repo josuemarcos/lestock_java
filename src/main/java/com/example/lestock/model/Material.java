@@ -53,4 +53,7 @@ public class Material {
         return price/ minimumPurchaseAmount;
     }
 
+    @Column(name = "user_id")
+    private Long userId;
+
 }
