@@ -1,5 +1,6 @@
 package com.example.lestock.config;
 import com.example.lestock.security.CustomUserDetailsService;
+import com.example.lestock.security.SocialLoginSuccessHandler;
 import com.example.lestock.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecutiryConfiguration {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, SocialLoginSuccessHandler successHandler) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(Customizer.withDefaults())
@@ -29,7 +30,9 @@ public class SecutiryConfiguration {
                     authorize.requestMatchers("/users/**").permitAll();
                     authorize.anyRequest().authenticated();
                 })
-                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login(oauth2 -> {
+                    oauth2.successHandler(successHandler);
+                })
                 .build();
     }
 
