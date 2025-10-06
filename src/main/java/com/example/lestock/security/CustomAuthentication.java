@@ -1,14 +1,15 @@
 package com.example.lestock.security;
 
 import com.example.lestock.model.User;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
-import java.util.List;
 
+@Getter
 @RequiredArgsConstructor
 public class CustomAuthentication implements Authentication {
     private final User user;

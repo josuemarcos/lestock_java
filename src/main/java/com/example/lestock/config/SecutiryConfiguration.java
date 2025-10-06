@@ -38,11 +38,6 @@ public class SecutiryConfiguration {
         return new BCryptPasswordEncoder();
     }
 
-   // @Bean
-    public UserDetailsService userDetailsService(UserService userService) {
-        return new CustomUserDetailsService(userService);
-    }
-
     @Bean
     public GrantedAuthorityDefaults grantedAuthorityDefaults() {
         return new GrantedAuthorityDefaults("");
