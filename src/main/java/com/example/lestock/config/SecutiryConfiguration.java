@@ -22,7 +22,7 @@ public class SecutiryConfiguration {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/users/**").permitAll();
                     authorize.anyRequest().authenticated();

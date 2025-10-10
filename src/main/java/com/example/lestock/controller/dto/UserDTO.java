@@ -9,7 +9,6 @@ public record UserDTO(
         Long id,
         @NotNull(message = "Can't be blank")
         String userName,
-        @NotNull(message = "Can't be blank")
         String password,
         @NotNull(message = "Can't be blank")
         @Email(message = "Invalid e-mail")

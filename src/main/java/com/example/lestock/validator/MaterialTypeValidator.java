@@ -1,15 +1,10 @@
 package com.example.lestock.validator;
-import com.example.lestock.controller.dto.MaterialTypeDTO;
 import com.example.lestock.controller.dto.errors.FieldErrorDTO;
-import com.example.lestock.controller.mapper.MaterialTypeMapper;
 import com.example.lestock.dao.MaterialTypeDAO;
 import com.example.lestock.exceptions.DuplicateRecordException;
 import com.example.lestock.model.MaterialType;
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
