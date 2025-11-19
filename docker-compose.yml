@@ -11,5 +11,17 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  app:
+    build: .
+    container_name: lestock_app_container
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/lestock_db
+      SPRING_DATASOURCE_USERNAME: lestock
+      SPRING_DATASOURCE_PASSWORD: pass321
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
 volumes:
   postgres_data:
