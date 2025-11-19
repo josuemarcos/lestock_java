@@ -1,10 +1,7 @@
 package com.example.lestock.service;
-
 import com.example.lestock.dao.StockMovementDAO;
-import com.example.lestock.model.MaterialType;
-import com.example.lestock.model.MovementType;
-import com.example.lestock.model.Stock;
-import com.example.lestock.model.StockMovement;
+import com.example.lestock.model.*;
+import com.example.lestock.security.SecurityService;
 import com.example.lestock.validator.StockMovementValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +15,7 @@ public class StockMovementService {
     private final StockMovementDAO stockMovementDAO;
     private final StockService stockService;
     private final StockMovementValidator stockMovementValidator;
+    private final SecurityService securityService;
 
 
     public Optional<StockMovement> getStockMovement(Long id) {
@@ -25,6 +23,8 @@ public class StockMovementService {
     }
     public void save(StockMovement stockMovement) {
         stockMovementValidator.validateStockMovement(stockMovement);
+        User user = securityService.getLoggedUser();
+        stockMovement.setUserId(user.getId());
         stockMovementDAO.save(stockMovement);
     }
     public List<StockMovement> getAllStockMovements() {

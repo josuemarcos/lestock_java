@@ -43,4 +43,7 @@ public class MaterialType
 
     @OneToOne(mappedBy = "materialType")
     private Stock stock;
+
+    @Column(name = "user_id")
+    private Long userId;
 }

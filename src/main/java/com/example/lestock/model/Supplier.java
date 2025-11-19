@@ -44,4 +44,7 @@ public class Supplier {
 
     @OneToMany(mappedBy = "supplier")
     private List<Material> materials;
+
+    @Column(name = "user_id")
+    private Long userId;
 }

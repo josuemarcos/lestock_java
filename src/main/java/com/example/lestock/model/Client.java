@@ -1,6 +1,5 @@
 package com.example.lestock.model;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,7 +7,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table
@@ -16,16 +14,22 @@ import java.util.List;
 @Setter
 @ToString
 @EntityListeners(AuditingEntityListener.class)
-public class Stock {
+public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private Float currentQuantity;
+    @Column(name = "client_id")
+    private String clientId;
+
+    @Column(name = "client_secret")
+    private String clientSecret;
+
+    @Column(name = "redirect_uri")
+    private String redirectURI;
 
     @Column
-    private Float averageCost;
+    private String scope;
 
     @CreatedDate
     @Column(name = "created_date")
@@ -35,13 +39,4 @@ public class Stock {
     @Column(name = "last_modified_date")
     private LocalDateTime lastModifiedDate;
 
-    @OneToMany(mappedBy = "stock")
-    private List<StockMovement> stockMovements;
-
-    @OneToOne
-    @JoinColumn(name = "material_type_id")
-    private MaterialType materialType;
-
-    @Column(name = "user_id")
-    private Long userId;
 }

@@ -1,6 +1,8 @@
 package com.example.lestock.service;
 import com.example.lestock.dao.MaterialTypeDAO;
 import com.example.lestock.model.MaterialType;
+import com.example.lestock.model.User;
+import com.example.lestock.security.SecurityService;
 import com.example.lestock.validator.MaterialTypeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,9 +15,12 @@ import java.util.Optional;
 public class MaterialTypeService {
     private final MaterialTypeDAO materialTypeDAO;
     private final MaterialTypeValidator materialTypeValidator;
+    private final SecurityService securityService;
 
     public void saveMaterialType(MaterialType materialType) {
         materialTypeValidator.validateMaterialType(materialType);
+        User user = securityService.getLoggedUser();
+        materialType.setUserId(user.getId());
         materialTypeDAO.save(materialType);
     }
 
@@ -29,6 +34,8 @@ public class MaterialTypeService {
 
     public void updateMaterialType(MaterialType materialType) {
         materialTypeValidator.validateMaterialType(materialType);
+        User user = securityService.getLoggedUser();
+        materialType.setUserId(user.getId());
         materialTypeDAO.save(materialType);
     }
 

@@ -1,6 +1,8 @@
 package com.example.lestock.service;
 import com.example.lestock.dao.MaterialDAO;
 import com.example.lestock.model.Material;
+import com.example.lestock.model.User;
+import com.example.lestock.security.SecurityService;
 import com.example.lestock.validator.MaterialValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,9 +14,12 @@ import java.util.Optional;
 public class MaterialService {
     private final MaterialDAO materialDAO;
     private final MaterialValidator materialValidator;
+    private final SecurityService securityService;
 
     public void saveMaterial(Material material) {
         materialValidator.validateMaterial(material);
+        User user = securityService.getLoggedUser();
+        material.setUserId(user.getId());
         materialDAO.save(material);
     }
 
@@ -28,6 +33,8 @@ public class MaterialService {
 
     public void updateMaterial(Material material) {
         materialValidator.validateMaterial(material);
+        User user = securityService.getLoggedUser();
+        material.setUserId(user.getId());
         materialDAO.save(material);
     }
 
