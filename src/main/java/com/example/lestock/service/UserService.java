@@ -5,6 +5,8 @@ import com.example.lestock.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,6 +20,10 @@ public class UserService {
         userValidator.validateUser(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDAO.save(user);
+    }
+
+    public List<User> getAllUsers() {
+        return userDAO.findAll();
     }
 
     public Optional<User> findByUserName(String userName) {

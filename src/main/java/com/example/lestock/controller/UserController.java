@@ -6,12 +6,10 @@ import com.example.lestock.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -26,5 +24,14 @@ public class UserController implements GenericController {
         userService.saveUser(user);
         URI location = generateHeaderLocation(user.getId());
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> users =  userService.getAllUsers()
+                .stream()
+                .map(userMapper::toDTO)
+                .toList();
+        return ResponseEntity.ok(users);
     }
 }
