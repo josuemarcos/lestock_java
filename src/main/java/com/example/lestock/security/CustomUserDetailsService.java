@@ -5,10 +5,12 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @RequiredArgsConstructor
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserService userService;
 
@@ -16,14 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         return userService.findByUserName(username)
-                .map(user -> {
-                    List<String> userRoles = user.getRoles();
-                    return User.builder()
-                            .username(username)
-                            .password(user.getPassword())
-                            .roles(userRoles.toArray(new String[userRoles.size()]))
-                            .build();
-                })
+                .map(CustomUserDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }
