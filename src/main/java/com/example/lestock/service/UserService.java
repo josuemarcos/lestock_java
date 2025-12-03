@@ -19,8 +19,16 @@ public class UserService {
         userDAO.save(user);
     }
 
+    public Optional<User> findUserById(Long id) {
+        return userDAO.findById(id);
+    }
+
     public List<User> findAllUsers() {
         return userDAO.findAll();
+    }
+
+    public void  deleteUser(User user) {
+        userDAO.delete(user);
     }
 
     public Optional<User> findByUserName(String userName) {

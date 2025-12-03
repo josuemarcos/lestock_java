@@ -35,4 +35,15 @@ public class UserController implements GenericController {
                 .toList();
         return ResponseEntity.ok(users);
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
+        return userService.findUserById(id)
+                .map(
+                        user -> {
+                            userService.deleteUser(user);
+                            return ResponseEntity.noContent().build();
+                        }
+                ).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
