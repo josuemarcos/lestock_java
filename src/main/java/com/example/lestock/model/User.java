@@ -24,6 +24,9 @@ public class User {
     @Column
     private String password;
 
+    @Column
+    private String email;
+
     //Used the library hypersistence-utils (https://github.com/vladmihalcea/hypersistence-utils)
     //To map the List<String> to array in the database
     @Type(ListArrayType.class)

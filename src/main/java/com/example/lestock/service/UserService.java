@@ -34,4 +34,8 @@ public class UserService {
     public Optional<User> findByUserName(String userName) {
         return userDAO.findByUserName(userName);
     }
+
+    public Optional<User> findByEmail(String email) {
+        return userDAO.findByEmail(email);
+    }
 }
