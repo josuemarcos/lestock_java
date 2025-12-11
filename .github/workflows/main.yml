@@ -1,17 +1,32 @@
-name: Keep Render Alive
+name: Keep Render Alive (Stable)
 
 on:
   schedule:
-    # A cada 14 minutos (0, 10 e 20)
-    - cron: "0/15 * * * *"
-  workflow_dispatch:  # permite rodar manualmente também
+    - cron: "0/14 * * * *"  # A cada 14 minutos (intervalo ideal para GitHub Actions)
+  workflow_dispatch:         # Permite rodar manualmente
 
 jobs:
   ping:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Wake up Render service
+      - name: Load environment
+        run: echo "Starting keep-alive workflow..."
+
+      # Pequeno delay pra evitar bloqueio em jobs muito rápidos
+      - name: Anti-throttling delay
+        run: sleep 8
+
+      - name: First ping
         run: |
-          echo "Sending request to wake up Render..."
-          curl -I https://lestock-java.onrender.com/material-types || true
+          echo "Ping 1 -> Render"
+          curl -s -o /dev/null -w "Status: %{http_code}\n" https://lestock-java.onrender.com/material-types || true
+
+      # Segundo ping (redundância altamente confiável)
+      - name: Second ping (redundancy)
+        run: |
+          echo "Ping 2 -> Render (Redundancy)"
+          curl -s -o /dev/null -w "Status: %{http_code}\n" https://lestock-java.onrender.com/material-types || true
+
+      - name: Finish
+        run: echo "Keep-alive cycle completed successfully."
