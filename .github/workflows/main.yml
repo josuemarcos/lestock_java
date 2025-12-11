@@ -3,7 +3,7 @@ name: Keep Render Alive
 on:
   schedule:
     # A cada 14 minutos (0, 10 e 20)
-    - cron: "0/10 * * * *"
+    - cron: "0/15 * * * *"
   workflow_dispatch:  # permite rodar manualmente também
 
 jobs:
