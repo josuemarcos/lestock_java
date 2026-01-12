@@ -108,6 +108,38 @@ o mapeamento de **roles** definido no sistema.
 
 ------------------------------------------------------------------------
 
+## 🛠️ Melhorias de Infraestrutura e Docker
+
+Ao longo da evolução do projeto, algumas otimizações importantes foram implementadas para tornar a aplicação mais leve, eficiente e pronta para ambientes reais de execução (produção e desenvolvimento).
+
+### 📦 Redução do tamanho da imagem Docker
+A imagem final da aplicação foi significativamente reduzida (aproximadamente **50% menor**) ao substituir a imagem base de execução:
+
+- De: `eclipse-temurin:21-jdk`
+- Para: `eclipse-temurin:21-jre-alpine`
+
+Essa mudança elimina dependências desnecessárias de build no runtime e utiliza uma base Alpine, resultando em imagens mais leves, rápidas para download e mais seguras.
+
+---
+
+### ⚡ Otimização do tempo de build com cache de dependências
+O Dockerfile foi ajustado para separar a camada de dependências da camada de código-fonte:
+
+- O arquivo `pom.xml` é copiado e as dependências Maven são resolvidas antecipadamente (`mvn dependency:go-offline`);
+- Apenas depois disso o código-fonte (`src/`) é copiado e o build é executado.
+
+Essa abordagem melhora significativamente o tempo de rebuild da imagem, aproveitando o cache do Docker sempre que o código muda, mas as dependências permanecem as mesmas.
+
+---
+
+### ▶️ Execução simplificada da aplicação com Docker Compose
+A configuração do `docker-compose` foi ajustada para permitir que todo o ambiente (API + banco de dados) seja iniciado com um único comando:
+
+```bash
+docker-compose up --build
+
+------------------------------------------------------------------------
+
 ## 💡 Futuras Implementações
 
 -   Integração com serviços externos (ex: envio de notificações)
