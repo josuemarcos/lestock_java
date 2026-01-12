@@ -13,6 +13,9 @@ services:
 
   app:
     image: lestock-api
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: lestock_app_container
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME}
