@@ -1,9 +1,9 @@
 package com.example.lestock.controller;
+
 import com.example.lestock.controller.dto.UserDTO;
 import com.example.lestock.controller.mapper.UserMapper;
 import com.example.lestock.model.User;
 import com.example.lestock.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ public class UserController implements GenericController {
     private final UserMapper userMapper;
 
     @PostMapping
-    public ResponseEntity<Void> saveUser(@RequestBody @Valid UserDTO userDTO) {
+    public ResponseEntity<Void> saveUser(@RequestBody UserDTO userDTO) {
         User user = userMapper.toEntity(userDTO);
         userService.saveUser(user);
         URI location = generateHeaderLocation(user.getId());
@@ -27,11 +27,23 @@ public class UserController implements GenericController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> users =  userService.getAllUsers()
+    public ResponseEntity<List<UserDTO>> findAllUsers() {
+        List<UserDTO> users = userService
+                .findAllUsers()
                 .stream()
                 .map(userMapper::toDTO)
                 .toList();
         return ResponseEntity.ok(users);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
+        return userService.findUserById(id)
+                .map(
+                        user -> {
+                            userService.deleteUser(user);
+                            return ResponseEntity.noContent().build();
+                        }
+                ).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
