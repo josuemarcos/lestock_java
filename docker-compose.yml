@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:15
-    container_name: lestock_db_container_v2
+    container_name: lestock_db_container
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USERNAME}
@@ -26,6 +26,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      CLIENT_ID: ${CLIENT_ID}
     ports:
       - "8080:8080"
     depends_on:

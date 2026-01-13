@@ -61,7 +61,7 @@ public class AuthController {
     public ResponseEntity<ResponseTokenDTO> google(@RequestBody GoogleLoginDTO googleLoginDTO) {
         GoogleIdToken.Payload payload = googleTokenVerifierService.verify(googleLoginDTO.tokenId());
 
-        return userService.findUserByEmail(payload.getEmail()).map(foundUser -> {
+        return userService.findByEmail(payload.getEmail()).map(foundUser -> {
             ResponseTokenDTO token = new ResponseTokenDTO(jwtService.generateToken(new  CustomUserDetails(foundUser)));
             return ResponseEntity.ok(token);
         }).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
