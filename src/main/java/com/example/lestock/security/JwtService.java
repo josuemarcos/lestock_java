@@ -30,13 +30,13 @@ public class JwtService {
                 .compact();
     }
 
-    public String extractUsername(String token) {
-        return extractAllClaims(token).getSubject();
+    public boolean isTokenValid(String token, UserDetails  userDetails ) {
+        final String userNameFromToken = extractUsername(token);
+        return (userNameFromToken.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public boolean isTokenValid(String token, UserDetails  userDetails ) {
-        final String userName = extractUsername(token);
-        return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public String extractUsername(String token) {
+        return extractAllClaims(token).getSubject();
     }
 
     private boolean isTokenExpired(String token) {

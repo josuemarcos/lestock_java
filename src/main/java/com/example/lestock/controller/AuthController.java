@@ -3,6 +3,7 @@ package com.example.lestock.controller;
 import com.example.lestock.controller.dto.UserDTO;
 import com.example.lestock.controller.dto.login.GoogleLoginDTO;
 import com.example.lestock.controller.dto.login.LoginRequestDTO;
+import com.example.lestock.controller.dto.login.ResponseTokenDTO;
 import com.example.lestock.controller.mapper.UserMapper;
 import com.example.lestock.model.User;
 import com.example.lestock.security.CustomUserDetails;
@@ -35,7 +36,7 @@ public class AuthController {
     private final GoogleTokenVerifierService googleTokenVerifierService;
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody LoginRequestDTO loginRequestDTO) {
+    public ResponseEntity<ResponseTokenDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     loginRequestDTO.userName(),
@@ -43,9 +44,9 @@ public class AuthController {
                 )
         );
 
-        UserDetails user = (UserDetails) auth.getPrincipal();
-        String token = jwtService.generateToken(user);
-        return ResponseEntity.ok(Map.of("token", token));
+        UserDetails authenticatedUser = (UserDetails) auth.getPrincipal();
+        ResponseTokenDTO token = new ResponseTokenDTO(jwtService.generateToken(authenticatedUser));
+        return ResponseEntity.ok(token);
     }
 
     @GetMapping("/me")
@@ -57,17 +58,13 @@ public class AuthController {
     }
 
     @PostMapping("/google")
-    public ResponseEntity<Object> google(@RequestBody GoogleLoginDTO googleLoginDTO) {
+    public ResponseEntity<ResponseTokenDTO> google(@RequestBody GoogleLoginDTO googleLoginDTO) {
         GoogleIdToken.Payload payload = googleTokenVerifierService.verify(googleLoginDTO.tokenId());
-        if(payload == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        User user = userService.findByEmail(payload.getEmail()).orElse(null);
-        if(user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        String token = jwtService.generateToken(new  CustomUserDetails(user));
-        return ResponseEntity.ok(Map.of("token", token));
+
+        return userService.findByEmail(payload.getEmail()).map(foundUser -> {
+            ResponseTokenDTO token = new ResponseTokenDTO(jwtService.generateToken(new  CustomUserDetails(foundUser)));
+            return ResponseEntity.ok(token);
+        }).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
 }
