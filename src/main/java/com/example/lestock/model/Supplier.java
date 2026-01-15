@@ -47,4 +47,15 @@ public class Supplier {
 
     @Column(name = "user_id")
     private Long userId;
+
+    public Supplier() {
+    }
+
+    public Supplier(String name, String description, String contact, String socialMedia, String address) {
+        this.name = name;
+        this.description = description;
+        this.contact = contact;
+        this.socialMedia = socialMedia;
+        this.address = address;
+    }
 }
