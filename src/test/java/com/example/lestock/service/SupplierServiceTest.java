@@ -1,6 +1,9 @@
 package com.example.lestock.service;
 import com.example.lestock.dao.SupplierDAO;
 import com.example.lestock.model.Supplier;
+import com.example.lestock.model.User;
+import com.example.lestock.security.SecurityService;
+import com.example.lestock.validator.SupplierValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,18 +24,25 @@ class SupplierServiceTest {
     @Mock
     private SupplierDAO supplierDAO;
 
+    @Mock
+    private SupplierValidator supplierValidator;
+
+    @Mock
+    private SecurityService securityService;
+
     @InjectMocks
     private SupplierService supplierService;
 
     Supplier supplier;
-    Supplier supplier2;
+    User user;
     List<Supplier> suppliers =  new ArrayList<>();
 
     @BeforeEach
     void setUp() {
         supplier = new Supplier("supplier1", "description1", "contact1", "socialMedia1", "address1");
-        supplier2 = new Supplier("supplier2", "description2", "contact2", "socialMedia2", "address2");
-        suppliers = List.of(supplier, supplier2);
+        suppliers = List.of(supplier);
+        user =  new User();
+        user.setId(1L);
     }
 
     @Test
@@ -43,8 +54,24 @@ class SupplierServiceTest {
         List<Supplier> result = supplierService.getSuppliers();
 
         //Assert
-        assertEquals(result.size(), suppliers.size());
+        assertEquals(1, result.size());
         Mockito.verify(supplierDAO, Mockito.times(1)).findAll();
+    }
+
+    @Test
+    void shouldSaveSupplier() {
+        //Arrange
+        Mockito.when(supplierDAO.save(Mockito.any())).thenReturn(supplier);
+        Mockito.doNothing().when(supplierValidator).validateSupplier(Mockito.any());
+        Mockito.when(securityService.getLoggedUser()).thenReturn(user);
+
+        //Act
+        supplierService.saveSupplier(supplier);
+
+        //Assert
+        Mockito.verify(supplierDAO, Mockito.times(1)).save(supplier);
+        Mockito.verify(supplierValidator, Mockito.times(1)).validateSupplier(supplier);
+        Mockito.verify(securityService, Mockito.times(1)).getLoggedUser();
     }
 
 
