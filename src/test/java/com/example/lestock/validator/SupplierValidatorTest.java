@@ -80,4 +80,20 @@ class SupplierValidatorTest {
         Mockito.verify(supplierDAO, Mockito.times(1)).findByName("savedSupplier");
     }
 
+    @Test
+    void shouldGiveErrorWhenTryingToUpdateANonSavedSupplier() {
+        //Arrange
+        Mockito.when(supplierDAO.findByName("savedSupplier")).thenReturn(Optional.of(savedSupplier));
+        newSupplier.setName("savedSupplier");
+        newSupplier.setId(2L);
+
+        //Act
+
+
+
+        //Assert
+        assertThrows(DuplicateRecordException.class, () -> supplierValidator.validateSupplier(newSupplier));
+        Mockito.verify(supplierDAO, Mockito.times(1)).findByName("savedSupplier");
+    }
+
 }
