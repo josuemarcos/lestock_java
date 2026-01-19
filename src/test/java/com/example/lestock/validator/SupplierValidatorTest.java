@@ -64,4 +64,20 @@ class SupplierValidatorTest {
         Mockito.verify(supplierDAO, Mockito.times(1)).findByName("savedSupplier");
     }
 
+    @Test
+    void shouldValidateASavedSupplierCorrectly() {
+        //Arrange
+        Mockito.when(supplierDAO.findByName("savedSupplier")).thenReturn(Optional.of(savedSupplier));
+        newSupplier.setName("savedSupplier");
+        newSupplier.setId(1L);
+
+        //Act
+
+
+
+        //Assert
+        assertDoesNotThrow(() -> supplierValidator.validateSupplier(newSupplier));
+        Mockito.verify(supplierDAO, Mockito.times(1)).findByName("savedSupplier");
+    }
+
 }
