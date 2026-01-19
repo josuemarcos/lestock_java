@@ -59,7 +59,7 @@ class SupplierServiceTest {
     }
 
     @Test
-    void shouldSaveSupplier() {
+    void shouldSaveSupplierSuccessfully() {
         //Arrange
         Mockito.when(supplierDAO.save(Mockito.any())).thenReturn(supplier);
         Mockito.doNothing().when(supplierValidator).validateSupplier(Mockito.any());
@@ -72,6 +72,20 @@ class SupplierServiceTest {
         Mockito.verify(supplierDAO, Mockito.times(1)).save(supplier);
         Mockito.verify(supplierValidator, Mockito.times(1)).validateSupplier(supplier);
         Mockito.verify(securityService, Mockito.times(1)).getLoggedUser();
+    }
+
+    @Test
+    void shouldReturnASupplier() {
+        //Arrange
+        supplier.setId(1L);
+        Mockito.when(supplierDAO.findById(1L)).thenReturn(Optional.of(supplier));
+
+        //Act
+        Optional<Supplier> result = supplierService.getSupplierById(1L);
+
+        //Assert
+        assertEquals("supplier1", result.get().getName());
+        Mockito.verify(supplierDAO, Mockito.times(1)).findById(1L);
     }
 
 
