@@ -88,6 +88,23 @@ class SupplierServiceTest {
         Mockito.verify(supplierDAO, Mockito.times(1)).findById(1L);
     }
 
+    @Test
+    void shouldUpdateSupplierSuccessfully() {
+        //Arrange
+        Mockito.when(supplierDAO.save(supplier)).thenReturn(supplier);
+        Mockito.doNothing().when(supplierValidator).validateSupplier(Mockito.any());
+        Mockito.when(securityService.getLoggedUser()).thenReturn(user);
+
+        //Act
+        supplier.setName("newName");
+        supplierService.updateSupplier(supplier);
+
+        //Assert
+        Mockito.verify(supplierDAO, Mockito.times(1)).save(supplier);
+        Mockito.verify(supplierValidator, Mockito.times(1)).validateSupplier(supplier);
+        Mockito.verify(securityService, Mockito.times(1)).getLoggedUser();
+    }
+
 
 
 }
