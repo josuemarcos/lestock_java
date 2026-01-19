@@ -96,13 +96,24 @@ class SupplierServiceTest {
         Mockito.when(securityService.getLoggedUser()).thenReturn(user);
 
         //Act
-        supplier.setName("newName");
         supplierService.updateSupplier(supplier);
 
         //Assert
         Mockito.verify(supplierDAO, Mockito.times(1)).save(supplier);
         Mockito.verify(supplierValidator, Mockito.times(1)).validateSupplier(supplier);
         Mockito.verify(securityService, Mockito.times(1)).getLoggedUser();
+    }
+
+    @Test
+    void shouldDeleteASupplier() {
+        //Arrange
+
+
+        //Act
+        supplierService.deleteSupplier(supplier);
+
+        //Assert
+        Mockito.verify(supplierDAO, Mockito.times(1)).delete(supplier);
     }
 
 
