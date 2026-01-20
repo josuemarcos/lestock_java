@@ -6,6 +6,7 @@ import com.example.lestock.model.User;
 import com.example.lestock.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -18,6 +19,7 @@ public class UserController implements GenericController {
     private final UserService userService;
     private final UserMapper userMapper;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Void> saveUser(@RequestBody UserDTO userDTO) {
         User user = userMapper.toEntity(userDTO);
@@ -26,6 +28,7 @@ public class UserController implements GenericController {
         return ResponseEntity.created(location).build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     public ResponseEntity<List<UserDTO>> findAllUsers() {
         List<UserDTO> users = userService
@@ -36,6 +39,7 @@ public class UserController implements GenericController {
         return ResponseEntity.ok(users);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
         return userService.findUserById(id)
