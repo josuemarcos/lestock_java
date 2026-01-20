@@ -42,7 +42,6 @@ class SupplierValidatorTest {
 
         //Act
 
-        
 
         //Assert
         assertDoesNotThrow(() -> supplierValidator.validateSupplier(newSupplier));

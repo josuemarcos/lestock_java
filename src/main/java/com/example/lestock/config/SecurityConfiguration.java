@@ -27,6 +27,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/users/**").permitAll();
                     authorize.requestMatchers("/auth/**").permitAll();
+                    authorize.requestMatchers("/health/**").permitAll();
                     authorize.anyRequest().authenticated();
                 })
                 .addFilterBefore(jWtAuthFilter, UsernamePasswordAuthenticationFilter.class)
