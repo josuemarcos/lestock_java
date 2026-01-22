@@ -1,6 +1,8 @@
 package com.example.lestock.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,9 +32,13 @@ public class JwtService {
                 .compact();
     }
 
-    public boolean isTokenValid(String token, UserDetails  userDetails ) {
-        final String userNameFromToken = extractUsername(token);
-        return (userNameFromToken.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public boolean isTokenValid(String token) {
+        try {
+            extractAllClaims(token);
+            return true;
+        } catch (JwtException e) {
+            return false;
+        }
     }
 
     public String extractUsername(String token) {
@@ -43,12 +49,14 @@ public class JwtService {
         return extractAllClaims(token).getExpiration().before(new Date());
     }
 
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
+
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
         return Jwts.parser()
                 .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+
     }
 }

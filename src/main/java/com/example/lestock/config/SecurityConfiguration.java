@@ -1,4 +1,5 @@
 package com.example.lestock.config;
+import com.example.lestock.security.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,10 +27,13 @@ import java.util.List;
 public class SecurityConfiguration {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jWtAuthFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   JwtAuthenticationFilter jWtAuthFilter,
+                                                   JwtAuthenticationEntryPoint entryPoint) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> {})
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(entryPoint))
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/error").permitAll();
                     authorize.requestMatchers("/auth/**").permitAll();
