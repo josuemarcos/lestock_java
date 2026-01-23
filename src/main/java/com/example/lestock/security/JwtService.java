@@ -45,10 +45,6 @@ public class JwtService {
         return extractAllClaims(token).getSubject();
     }
 
-    private boolean isTokenExpired(String token) {
-        return extractAllClaims(token).getExpiration().before(new Date());
-    }
-
     public Claims extractAllClaims(String token) {
 
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
