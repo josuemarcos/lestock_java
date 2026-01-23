@@ -80,7 +80,7 @@ class SupplierValidatorTest {
     }
 
     @Test
-    void shouldGiveErrorWhenTryingToUpdateANonSavedSupplier() {
+    void shouldGiveErrorWhenTryingToUpdateASavedSupplierWithNameAlreadyTaken() {
         //Arrange
         Mockito.when(supplierDAO.findByName("savedSupplier")).thenReturn(Optional.of(savedSupplier));
         newSupplier.setName("savedSupplier");

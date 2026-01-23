@@ -17,6 +17,15 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class MaterialType
 {
+    public MaterialType(String name, String metricUnit, String brand) {
+        this.name = name;
+        this.metricUnit = metricUnit;
+        this.brand = brand;
+    }
+
+    public MaterialType() {
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
