@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final CustomUserDetailsService customUserDetailsService;
+    private final static List<String> openPaths = List.of("/auth", "/health", "/error");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -29,15 +31,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String path = request.getServletPath();
 
-        if (path.startsWith("/auth")
-                || path.startsWith("/health")
-                || path.equals("/error")) {
+        if (isOpenPath(path)) {
             filterChain.doFilter(request, response);
             return;
         }
         final String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (isAuthHeaderInvalid(authHeader)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -52,17 +52,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String informedUserName = jwtService.extractUsername(token);
 
-        UserDetails informedUser =
-                customUserDetailsService.loadUserByUsername(informedUserName);
+        UserDetails informedUser = customUserDetailsService.loadUserByUsername(informedUserName);
 
+        UsernamePasswordAuthenticationToken authToken = generateAuthToken(informedUser);
+
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+        filterChain.doFilter(request, response);
+    }
+
+    private static boolean isOpenPath(String path) {
+        boolean pathIsOpen = false;
+        for (String openPath : openPaths) {
+            if (path.startsWith(openPath)) {
+                pathIsOpen = true;
+                break;
+            }
+        }
+        return pathIsOpen;
+    }
+
+    private static boolean isAuthHeaderInvalid(String authHeader) {
+        return authHeader == null || !authHeader.startsWith("Bearer ");
+    }
+
+
+    private static UsernamePasswordAuthenticationToken generateAuthToken(UserDetails informedUser) {
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(
                         informedUser,
                         null,
                         informedUser.getAuthorities()
                 );
-
-        SecurityContextHolder.getContext().setAuthentication(authToken);
-        filterChain.doFilter(request, response);
+        return authToken;
     }
 }
