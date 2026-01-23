@@ -6,6 +6,7 @@ import com.example.lestock.exceptions.InvalidRecordException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -75,6 +76,12 @@ public class GlobalExcepionHandler {
         return new ResponseErrorDTO(HttpStatus.UNPROCESSABLE_ENTITY.value(),
                 "Validation error",
                 fields);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseErrorDTO handleBadCredentialsException(BadCredentialsException e) {
+        return new ResponseErrorDTO(HttpStatus.UNAUTHORIZED.value(), "Invalid user name or password", null);
     }
 
 
