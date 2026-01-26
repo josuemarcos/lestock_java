@@ -1,5 +1,6 @@
 package com.example.lestock.controller;
 
+import com.example.lestock.controller.common.GenericController;
 import com.example.lestock.controller.dto.UserDTO;
 import com.example.lestock.controller.mapper.UserMapper;
 import com.example.lestock.model.User;

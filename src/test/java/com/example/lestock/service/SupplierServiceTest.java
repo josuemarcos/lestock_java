@@ -1,9 +1,10 @@
 package com.example.lestock.service;
-import com.example.lestock.dao.SupplierDAO;
-import com.example.lestock.model.Supplier;
+import com.example.lestock.dao.stock.SupplierDAO;
+import com.example.lestock.model.stock.Supplier;
 import com.example.lestock.model.User;
 import com.example.lestock.security.SecurityService;
-import com.example.lestock.validator.SupplierValidator;
+import com.example.lestock.service.stock.SupplierService;
+import com.example.lestock.validator.stock.SupplierValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

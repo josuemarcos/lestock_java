@@ -1,0 +1,45 @@
+package com.example.lestock.service.stock;
+import com.example.lestock.dao.stock.StockDAO;
+import com.example.lestock.model.stock.MaterialType;
+import com.example.lestock.model.stock.Stock;
+import com.example.lestock.model.User;
+import com.example.lestock.security.SecurityService;
+import com.example.lestock.validator.stock.StockValidator;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class StockService {
+    private final StockDAO stockDAO;
+    private final StockValidator stockValidator;
+    private final SecurityService securityService;
+
+    public void saveStock(Stock stock) {
+        stockValidator.validateStock(stock);
+        User user = securityService.getLoggedUser();
+        stock.setUserId(user.getId());
+        stockDAO.save(stock);
+    }
+    public List<Stock> getAllStocks() {
+        return stockDAO.findAll();
+    }
+
+    public Optional<Stock> getStockByMaterialType(MaterialType materialType) {
+        return stockDAO.findByMaterialType(materialType);
+    }
+
+    public void updateStock(Stock stock) {
+        stockValidator.validateStock(stock);
+        User user = securityService.getLoggedUser();
+        stock.setUserId(user.getId());
+        stockDAO.save(stock);
+    }
+
+    public Optional<Stock> getStockById(Long id) {
+        return stockDAO.findById(id);
+    }
+}

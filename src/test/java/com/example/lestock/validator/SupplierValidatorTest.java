@@ -1,8 +1,9 @@
 package com.example.lestock.validator;
 
-import com.example.lestock.dao.SupplierDAO;
+import com.example.lestock.dao.stock.SupplierDAO;
 import com.example.lestock.exceptions.DuplicateRecordException;
-import com.example.lestock.model.Supplier;
+import com.example.lestock.model.stock.Supplier;
+import com.example.lestock.validator.stock.SupplierValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
