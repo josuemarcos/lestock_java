@@ -45,4 +45,24 @@ public class CostController implements GenericController {
                 .map(cost -> ResponseEntity.ok(costMapper.toDTO(cost)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Object> updateCost(@PathVariable Long id, @RequestBody @Valid CostDTO cost) {
+        return costService.getCostById(id).map(foundCost -> {
+            foundCost.setName(cost.name());
+            foundCost.setUnitPrice(cost.unitPrice());
+            costService.updateCost(foundCost);
+            return ResponseEntity.ok().build();
+        }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Object> deleteCost(@PathVariable Long id) {
+        return costService.getCostById(id).map(foundCost -> {
+            costService.deleteCost(foundCost);
+            return ResponseEntity.noContent().build();
+        }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
