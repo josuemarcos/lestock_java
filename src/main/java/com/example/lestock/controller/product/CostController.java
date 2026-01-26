@@ -8,12 +8,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/costs")
@@ -30,5 +28,12 @@ public class CostController implements GenericController {
         costService.saveCost(costEntity);
         URI location = generateHeaderLocation(costEntity.getId());
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<List<CostDTO>> getAllCosts() {
+        List<CostDTO> costs = costService.getAllCosts().stream().map(costMapper::toDTO).toList();
+        return ResponseEntity.ok(costs);
     }
 }

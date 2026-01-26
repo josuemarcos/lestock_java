@@ -7,6 +7,6 @@ public record CostDTO(
         Long id,
         @NotBlank(message = "name can't be blank")
         String name,
-        @NotNull(message = "unitCost can't be null")
-        Double unitCost) {
+        @NotNull(message = "unitPrice can't be null")
+        Double unitPrice) {
 }
