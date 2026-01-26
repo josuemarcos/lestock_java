@@ -36,4 +36,13 @@ public class CostController implements GenericController {
         List<CostDTO> costs = costService.getAllCosts().stream().map(costMapper::toDTO).toList();
         return ResponseEntity.ok(costs);
     }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<CostDTO> getCostById(@PathVariable Long id) {
+        return costService
+                .getCostById(id)
+                .map(cost -> ResponseEntity.ok(costMapper.toDTO(cost)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
