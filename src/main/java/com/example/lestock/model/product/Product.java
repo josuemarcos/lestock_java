@@ -1,16 +1,12 @@
 package com.example.lestock.model.product;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Table
 @Entity
-@Getter
-@Setter
-public class Cost {
+@Table
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,9 +14,12 @@ public class Cost {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "unit_price", nullable = false)
-    private Double unitPrice;
+    private Double price;
 
-    @OneToMany(mappedBy = "cost")
+    @Column(name = "profit_margin", nullable = false)
+    private Double profitMargin;
+
+    @OneToMany(mappedBy = "product")
     private Set<ProductCost> productCosts =  new HashSet<>();
+
 }
