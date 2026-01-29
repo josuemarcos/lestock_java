@@ -24,4 +24,5 @@ logging:
   level:
     org.springframework.security: DEBUG
     org.springframework.security.web.FilterChainProxy: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: DEBUG
 

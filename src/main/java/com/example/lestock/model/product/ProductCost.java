@@ -26,7 +26,7 @@ public class ProductCost {
     private Double quantity;
 
     @Transient
-    private Double getTotalCost() {
+    public Double getTotalCost() {
         if(cost == null || cost.getUnitPrice() == null) return 0.0;
         return quantity * cost.getUnitPrice();
     }

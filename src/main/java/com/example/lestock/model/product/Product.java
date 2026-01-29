@@ -20,10 +20,10 @@ public class Product {
     @Column(name = "profit_margin", nullable = false)
     private Double profitMargin;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProductCost> productCosts =  new HashSet<>();
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProductMaterial> productMaterials =  new HashSet<>();
 
     @Transient
@@ -42,7 +42,12 @@ public class Product {
 
     @Transient
     public Double getPrice() {
-        return (this.getOperationalCost() + this.getMaterialCost()) * this.profitMargin;
+        return (this.getOperationalCost() + this.getMaterialCost()) * (1 + this.profitMargin);
+    }
+
+    @Transient
+    public Double getProfitValue() {
+        return this.getPrice() * this.profitMargin;
     }
 
 }

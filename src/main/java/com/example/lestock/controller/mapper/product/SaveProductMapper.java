@@ -8,7 +8,5 @@ import org.mapstruct.Mapping;
 public interface SaveProductMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "productCosts", ignore = true)
-    @Mapping(target = "productMaterials", ignore = true)
     Product toEntity(SaveProductDTO dto);
 }

@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 public record SaveMaterialDTO(
         Float minimumPurchaseAmount,
         Float price,
-        Float pricePerAmount,
         String description,
         Integer averageDeliveryTime,
         @NotNull(message = "Can't be blank!")

@@ -7,7 +7,8 @@ public record GetProductDTO(
         Double profitMargin,
         Double materialCost,
         Double operationalCost,
+        Double profitValue,
         Set<GetProductCostDTO> productCosts,
-        Set<GetProductMaterialDTO> materialCosts
+        Set<GetProductMaterialDTO> productMaterials
 ) {
 }
