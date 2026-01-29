@@ -17,8 +17,6 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    private Double price;
-
     @Column(name = "profit_margin", nullable = false)
     private Double profitMargin;
 
@@ -40,6 +38,11 @@ public class Product {
         return this.productMaterials.stream()
                 .mapToDouble(pc -> pc.getMaterial().getPricePerAmount() * pc.getQuantity())
                 .sum();
+    }
+
+    @Transient
+    public Double getPrice() {
+        return (this.getOperationalCost() + this.getMaterialCost()) * this.profitMargin;
     }
 
 }
