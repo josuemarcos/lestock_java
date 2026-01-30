@@ -41,13 +41,15 @@ public class Product {
     }
 
     @Transient
-    public Double getPrice() {
-        return (this.getOperationalCost() + this.getMaterialCost()) * (1 + this.profitMargin);
+    public String getPrice() {
+        Double price = (this.getOperationalCost() + this.getMaterialCost()) * (1 + this.profitMargin);
+        return String.format("%.2f", price);
     }
 
     @Transient
-    public Double getProfitValue() {
-        return this.getPrice() * this.profitMargin;
+    public String getProfitValue() {
+        Double profitValue = Double.parseDouble(this.getPrice()) * this.profitMargin;
+        return String.format("%.2f", profitValue);
     }
 
 }
