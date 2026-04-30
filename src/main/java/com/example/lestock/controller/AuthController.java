@@ -5,7 +5,6 @@ import com.example.lestock.controller.dto.login.GoogleLoginDTO;
 import com.example.lestock.controller.dto.login.LoginRequestDTO;
 import com.example.lestock.controller.dto.login.ResponseTokenDTO;
 import com.example.lestock.controller.mapper.UserMapper;
-import com.example.lestock.model.User;
 import com.example.lestock.security.CustomUserDetails;
 import com.example.lestock.security.CustomUserDetailsService;
 import com.example.lestock.security.GoogleTokenVerifierService;
@@ -21,8 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")

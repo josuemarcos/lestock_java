@@ -16,6 +16,17 @@ services:
       timeout: 5s
       retries: 5
 
+  pgadmin4crescer:
+    image: dpage/pgadmin4:8
+    container_name: pgadmin-lestock
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@domain.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+
+
   app:
     image: lestock-api
     build:
