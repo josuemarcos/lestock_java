@@ -9,6 +9,8 @@ import com.example.lestock.service.stock.MaterialService;
 import com.example.lestock.service.stock.MaterialTypeService;
 import com.example.lestock.service.stock.StockService;
 import com.example.lestock.service.stock.SupplierService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+@Tag(name = "Materials")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/materials")
@@ -29,6 +32,7 @@ public class MaterialController implements GenericController {
     private final StockService stockService;
     private final StockMapper stockMapper;
 
+    @Operation(summary = "Save material", description = "Save a material to database")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     ResponseEntity<Void> saveMaterial(@RequestBody @Valid SaveMaterialDTO materialDTO) {
@@ -38,6 +42,7 @@ public class MaterialController implements GenericController {
         return ResponseEntity.created(location).build();
     }
 
+    @Operation(summary = "Get all materials", description = "Return all saved materials")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     ResponseEntity<List<GetMaterialDTO>> getAllMaterials() {
@@ -48,6 +53,7 @@ public class MaterialController implements GenericController {
         return ResponseEntity.ok(materials);
     }
 
+    @Operation(summary = "Get material", description = "Return a specific saved material by its id")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     ResponseEntity<GetMaterialDTO> getMaterial(@PathVariable Long id) {
@@ -60,6 +66,7 @@ public class MaterialController implements GenericController {
                 ).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Update material", description = "Update a saved material")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     ResponseEntity<Object> updateMaterial(@PathVariable Long id, @RequestBody @Valid SaveMaterialDTO materialDTO) {
@@ -71,6 +78,7 @@ public class MaterialController implements GenericController {
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Delete material", description = "Remove a saved material")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     ResponseEntity<Object> deleteMaterial(@PathVariable Long id) {

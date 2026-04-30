@@ -27,12 +27,6 @@ public class SupplierController implements GenericController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @Operation(summary = "Save", description = "Register a new supplier")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Supplier registered successfully"),
-            @ApiResponse(responseCode = "422", description = "Validation Error"),
-            @ApiResponse(responseCode = "401", description = "User not authenticated"),
-            @ApiResponse(responseCode = "403", description = "User Role has no permission")
-    })
     public ResponseEntity<Void> saveSupplier(@RequestBody @Valid SupplierDTO supplierDTO) {
         Supplier supplierEntity = supplierMapper.toEntity(supplierDTO);
         supplierService.saveSupplier(supplierEntity);
@@ -43,11 +37,6 @@ public class SupplierController implements GenericController {
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     @Operation(summary = "Get all Suppliers", description = "Retrieve all suppliers from database")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Returned all suppliers registered"),
-            @ApiResponse(responseCode = "401", description = "User not authenticated"),
-            @ApiResponse(responseCode = "403", description = "User Role has no permission")
-    })
     public ResponseEntity<List<SupplierDTO>> getSuppliers(){
         List<SupplierDTO> suppliers = supplierService.getSuppliers()
                 .stream()
@@ -59,12 +48,6 @@ public class SupplierController implements GenericController {
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("{id}")
     @Operation(summary = "Get Supplier", description = "Retrieve a supplier from database")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Supplier found"),
-            @ApiResponse(responseCode = "404", description = "Supplier not found"),
-            @ApiResponse(responseCode = "401", description = "User not authenticated"),
-            @ApiResponse(responseCode = "403", description = "User Role has no permission")
-    })
     public ResponseEntity<SupplierDTO> getSupplier(@PathVariable Long id){
         return supplierService.getSupplierById(id)
                 .map(
@@ -79,13 +62,6 @@ public class SupplierController implements GenericController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("{id}")
     @Operation(summary = "Update Supplier", description = "Update a supplier")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Supplier updated successfully"),
-            @ApiResponse(responseCode = "404", description = "Supplier meant to be updated not found"),
-            @ApiResponse(responseCode = "422", description = "Validation Error"),
-            @ApiResponse(responseCode = "401", description = "User not authenticated"),
-            @ApiResponse(responseCode = "403", description = "User Role has no permission")
-    })
     public ResponseEntity<Object> updateSupplier(@PathVariable Long id, @RequestBody @Valid SupplierDTO supplierDTO){
         return supplierService.getSupplierById(id)
                 .map(
@@ -104,12 +80,6 @@ public class SupplierController implements GenericController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("{id}")
     @Operation(summary = "Delete Supplier", description = "Delete a supplier")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Supplier deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Supplier meant to be deleted not found"),
-            @ApiResponse(responseCode = "401", description = "User not authenticated"),
-            @ApiResponse(responseCode = "403", description = "User Role has no permission")
-    })
     public ResponseEntity<Object> deleteSupplier(@PathVariable Long id) {
         return supplierService.getSupplierById(id)
                 .map(

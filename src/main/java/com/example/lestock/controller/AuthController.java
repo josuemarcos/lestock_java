@@ -11,6 +11,8 @@ import com.example.lestock.security.GoogleTokenVerifierService;
 import com.example.lestock.security.JwtService;
 import com.example.lestock.service.UserService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Authentication")
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -32,6 +35,7 @@ public class AuthController {
     private final UserMapper userMapper;
     private final GoogleTokenVerifierService googleTokenVerifierService;
 
+    @Operation(summary = "Login", description = "Return a token to an authenticated user")
     @PostMapping("/login")
     public ResponseEntity<ResponseTokenDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
         Authentication auth = authenticationManager.authenticate(
@@ -46,6 +50,7 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
+    @Operation(summary = "Logged user", description = "Return the logged user")
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -54,6 +59,7 @@ public class AuthController {
         return ResponseEntity.ok(userDTO);
     }
 
+    @Operation(summary = "Login with google", description = "Authenticate user with google id")
     @PostMapping("/google")
     public ResponseEntity<ResponseTokenDTO> google(@RequestBody GoogleLoginDTO googleLoginDTO) {
         GoogleIdToken.Payload payload = googleTokenVerifierService.verify(googleLoginDTO.tokenId());

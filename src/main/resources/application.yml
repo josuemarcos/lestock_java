@@ -32,4 +32,9 @@ jwt:
   private:
     key: classpath:authz.pem
 
+scalar:
+  url: ${SCALAR_URL:http://localhost:8080/v3/api-docs}
+  path: /docs
+  enabled: true
+
 

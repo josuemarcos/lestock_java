@@ -57,6 +57,9 @@ public class SecurityConfiguration {
                     authorize.requestMatchers("/error").permitAll();
                     authorize.requestMatchers("/auth/**").permitAll();
                     authorize.requestMatchers("/actuator/**").permitAll();
+                    authorize.requestMatchers("/docs/**").permitAll();
+                    authorize.requestMatchers("/v3/api-docs/**").permitAll();
+                    authorize.requestMatchers("/swagger-ui/**", "/swagger-resources/**").permitAll();
                     authorize.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 -> oauth2
