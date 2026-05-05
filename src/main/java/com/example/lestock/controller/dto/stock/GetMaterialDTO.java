@@ -8,6 +8,6 @@ public record GetMaterialDTO(
         String description,
         Integer averageDeliveryTime,
         GetSupplierDTO supplier,
-        MaterialTypeDTO materialType
+        GetMaterialTypeDTO materialType
 ) {
 }

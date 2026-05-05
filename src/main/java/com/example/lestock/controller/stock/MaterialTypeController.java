@@ -13,8 +13,6 @@ import com.example.lestock.service.stock.MaterialTypeService;
 import com.example.lestock.service.stock.StockMovementService;
 import com.example.lestock.service.stock.StockService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +37,7 @@ public class MaterialTypeController implements GenericController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @Operation(summary = "Save Material Type", description = "Register a new material type")
-    ResponseEntity<Void> saveMaterialType(@RequestBody @Valid MaterialTypeDTO materialTypeDTO,
+    ResponseEntity<Void> saveMaterialType(@RequestBody @Valid SaveMaterialTypeDTO materialTypeDTO,
                                           @LoggedUser User loggedUser) {
         MaterialType materialType = materialTypeMapper.toEntity(materialTypeDTO);
         materialTypeService.saveMaterialType(materialType, loggedUser);
@@ -50,8 +48,8 @@ public class MaterialTypeController implements GenericController {
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     @Operation(summary = "Get all Material Types", description = "Retrieve all Material Types from database")
-    ResponseEntity<List<MaterialTypeDTO>> getAllMaterialTypes() {
-        List<MaterialTypeDTO> materialTypes = materialTypeService.getMaterialTypes()
+    ResponseEntity<List<GetMaterialTypeDTO>> getAllMaterialTypes() {
+        List<GetMaterialTypeDTO> materialTypes = materialTypeService.getMaterialTypes()
                 .stream()
                 .map(materialTypeMapper::toDTO)
                 .toList();
@@ -61,10 +59,10 @@ public class MaterialTypeController implements GenericController {
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     @Operation(summary = "Get Material Type", description = "Retrieve a Material Type from database")
-    ResponseEntity<MaterialTypeDTO> getMaterialType(@PathVariable Long id) {
+    ResponseEntity<GetMaterialTypeDTO> getMaterialType(@PathVariable Long id) {
         return materialTypeService.getMaterialType(id)
                 .map(materialType -> {
-                    MaterialTypeDTO materialTypeDTO = materialTypeMapper.toDTO(materialType);
+                    GetMaterialTypeDTO materialTypeDTO = materialTypeMapper.toDTO(materialType);
                     return ResponseEntity.ok(materialTypeDTO);
                 }).orElse(ResponseEntity.notFound().build());
     }
@@ -72,7 +70,7 @@ public class MaterialTypeController implements GenericController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     @Operation(summary = "Update Material Type", description = "Update a Material Type")
-    ResponseEntity<Object> updateMaterialType(@RequestBody @Valid MaterialTypeDTO materialTypeDTO,
+    ResponseEntity<Object> updateMaterialType(@RequestBody @Valid GetMaterialTypeDTO materialTypeDTO,
                                               @PathVariable Long id,
                                               @LoggedUser User loggedUser) {
         return materialTypeService.getMaterialType(id)

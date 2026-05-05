@@ -10,7 +10,7 @@ public record GetStockMovementDTO(
         Float quantity,
         Float unitPrice,
         LocalDate movementDate,
-        MaterialTypeDTO materialType,
+        GetMaterialTypeDTO materialType,
         GetSupplierDTO supplier
 ) {
 }
