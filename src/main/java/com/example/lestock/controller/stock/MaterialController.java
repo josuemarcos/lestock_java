@@ -4,7 +4,9 @@ import com.example.lestock.controller.dto.stock.GetMaterialDTO;
 import com.example.lestock.controller.dto.stock.SaveMaterialDTO;
 import com.example.lestock.controller.mapper.stock.MaterialMapper;
 import com.example.lestock.controller.mapper.stock.StockMapper;
+import com.example.lestock.model.User;
 import com.example.lestock.model.stock.Material;
+import com.example.lestock.security.annotation.LoggedUser;
 import com.example.lestock.service.stock.MaterialService;
 import com.example.lestock.service.stock.MaterialTypeService;
 import com.example.lestock.service.stock.StockService;
@@ -35,9 +37,9 @@ public class MaterialController implements GenericController {
     @Operation(summary = "Save material", description = "Save a material to database")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    ResponseEntity<Void> saveMaterial(@RequestBody @Valid SaveMaterialDTO materialDTO) {
+    ResponseEntity<Void> saveMaterial(@RequestBody @Valid SaveMaterialDTO materialDTO, @LoggedUser User loggedUser) {
         Material materialEntity = materialMapper.toEntity(materialDTO);
-        materialService.saveMaterial(materialEntity);
+        materialService.saveMaterial(materialEntity, loggedUser);
         URI location = generateHeaderLocation(materialEntity.getId());
         return ResponseEntity.created(location).build();
     }
@@ -69,11 +71,13 @@ public class MaterialController implements GenericController {
     @Operation(summary = "Update material", description = "Update a saved material")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    ResponseEntity<Object> updateMaterial(@PathVariable Long id, @RequestBody @Valid SaveMaterialDTO materialDTO) {
+    ResponseEntity<Object> updateMaterial(@PathVariable Long id,
+                                          @RequestBody @Valid SaveMaterialDTO materialDTO,
+                                          @LoggedUser User loggedUser) {
         return materialService.getMaterialById(id)
                 .map(material -> {
                     materialMapper.updateEntity(material, materialDTO);
-                    materialService.updateMaterial(material);
+                    materialService.updateMaterial(material, loggedUser);
                     return ResponseEntity.ok().build();
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }

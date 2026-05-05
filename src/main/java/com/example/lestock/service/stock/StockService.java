@@ -18,10 +18,9 @@ public class StockService {
     private final StockValidator stockValidator;
     private final SecurityService securityService;
 
-    public void saveStock(Stock stock) {
+    public void saveStock(Stock stock, User loggedUser) {
         stockValidator.validateStock(stock);
-        User user = securityService.getLoggedUser();
-        stock.setUserId(user.getId());
+        stock.setUserId(loggedUser.getId());
         stockDAO.save(stock);
     }
     public List<Stock> getAllStocks() {

@@ -16,10 +16,9 @@ public class MaterialService {
     private final MaterialValidator materialValidator;
     private final SecurityService securityService;
 
-    public void saveMaterial(Material material) {
+    public void saveMaterial(Material material, User loggedUser) {
         materialValidator.validateMaterial(material);
-        User user = securityService.getLoggedUser();
-        material.setUserId(user.getId());
+        material.setUserId(loggedUser.getId());
         materialDAO.save(material);
     }
 
@@ -31,10 +30,9 @@ public class MaterialService {
         return materialDAO.findById(id);
     }
 
-    public void updateMaterial(Material material) {
+    public void updateMaterial(Material material, User loggedUser) {
         materialValidator.validateMaterial(material);
-        User user = securityService.getLoggedUser();
-        material.setUserId(user.getId());
+        material.setUserId(loggedUser.getId());
         materialDAO.save(material);
     }
 

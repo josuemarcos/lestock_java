@@ -17,10 +17,9 @@ public class MaterialTypeService {
     private final MaterialTypeValidator materialTypeValidator;
     private final SecurityService securityService;
 
-    public void saveMaterialType(MaterialType materialType) {
+    public void saveMaterialType(MaterialType materialType, User loggedUser) {
         materialTypeValidator.validateMaterialType(materialType);
-        User user = securityService.getLoggedUser();
-        materialType.setUserId(user.getId());
+        materialType.setUserId(loggedUser.getId());
         materialTypeDAO.save(materialType);
     }
 
@@ -32,10 +31,9 @@ public class MaterialTypeService {
         return materialTypeDAO.findById(id);
     }
 
-    public void updateMaterialType(MaterialType materialType) {
+    public void updateMaterialType(MaterialType materialType, User loggedUser) {
         materialTypeValidator.validateMaterialType(materialType);
-        User user = securityService.getLoggedUser();
-        materialType.setUserId(user.getId());
+        materialType.setUserId(loggedUser.getId());
         materialTypeDAO.save(materialType);
     }
 

@@ -2,7 +2,9 @@ package com.example.lestock.controller.stock;
 import com.example.lestock.controller.common.GenericController;
 import com.example.lestock.controller.dto.stock.SupplierDTO;
 import com.example.lestock.controller.mapper.stock.SupplierMapper;
+import com.example.lestock.model.User;
 import com.example.lestock.model.stock.Supplier;
+import com.example.lestock.security.annotation.LoggedUser;
 import com.example.lestock.service.stock.SupplierService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,9 +29,9 @@ public class SupplierController implements GenericController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @Operation(summary = "Save", description = "Register a new supplier")
-    public ResponseEntity<Void> saveSupplier(@RequestBody @Valid SupplierDTO supplierDTO) {
+    public ResponseEntity<Void> saveSupplier(@RequestBody @Valid SupplierDTO supplierDTO, @LoggedUser User loggedUser) {
         Supplier supplierEntity = supplierMapper.toEntity(supplierDTO);
-        supplierService.saveSupplier(supplierEntity);
+        supplierService.saveSupplier(supplierEntity, loggedUser);
         URI location = generateHeaderLocation(supplierEntity.getId());
         return ResponseEntity.created(location).build();
     }
@@ -62,7 +64,8 @@ public class SupplierController implements GenericController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("{id}")
     @Operation(summary = "Update Supplier", description = "Update a supplier")
-    public ResponseEntity<Object> updateSupplier(@PathVariable Long id, @RequestBody @Valid SupplierDTO supplierDTO){
+    public ResponseEntity<Object> updateSupplier(@PathVariable Long id, @RequestBody @Valid SupplierDTO supplierDTO,
+                                                 @LoggedUser User loggedUser){
         return supplierService.getSupplierById(id)
                 .map(
                         supplier -> {
@@ -71,7 +74,7 @@ public class SupplierController implements GenericController {
                             supplier.setContact(supplierDTO.contact());
                             supplier.setDescription(supplierDTO.description());
                             supplier.setSocialMedia(supplierDTO.socialMedia());
-                            supplierService.updateSupplier(supplier);
+                            supplierService.updateSupplier(supplier, loggedUser);
                             return ResponseEntity.ok().build();
                         }
                 ).orElseGet(() -> ResponseEntity.notFound().build());

@@ -20,10 +20,9 @@ public class SupplierService {
         return supplierDAO.findAll();
     }
 
-    public void saveSupplier(Supplier supplier) {
+    public void saveSupplier(Supplier supplier, User loggedUser) {
         supplierValidator.validateSupplier(supplier);
-        User user = securityService.getLoggedUser();
-        supplier.setUserId(user.getId());
+        supplier.setUserId(loggedUser.getId());
         supplierDAO.save(supplier);
     }
 
@@ -31,10 +30,9 @@ public class SupplierService {
         return supplierDAO.findById(id);
     }
 
-    public void updateSupplier(Supplier supplier) {
+    public void updateSupplier(Supplier supplier, User loggedUser) {
         supplierValidator.validateSupplier(supplier);
-        User user = securityService.getLoggedUser();
-        supplier.setUserId(user.getId());
+        supplier.setUserId(loggedUser.getId());
         supplierDAO.save(supplier);
     }
 

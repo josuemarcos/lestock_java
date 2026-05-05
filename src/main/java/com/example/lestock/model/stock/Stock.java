@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table
@@ -43,4 +44,50 @@ public class Stock {
 
     @Column(name = "user_id")
     private Long userId;
+
+    public void addStockMovement(StockMovement stockMovement) {
+        this.stockMovements.add(stockMovement);
+    }
+
+    public void removeStockMovement(StockMovement stockMovement) {
+        this.stockMovements.remove(stockMovement);
+    }
+
+    public Float getCurrentQuantity() {
+        float incoming = stockMovements.stream()
+                .filter(Objects::nonNull)
+                .filter(sm -> sm.getMovementType().equals(MovementType.PURCHASE))
+                .map(StockMovement::getQuantity)
+                .reduce(0f, Float::sum);
+
+        float withdrawals = stockMovements.stream()
+                .filter(Objects::nonNull)
+                .filter(sm -> sm.getMovementType().equals(MovementType.SALE))
+                .map(StockMovement::getQuantity)
+                .reduce(0f, Float::sum);
+
+        return incoming -  withdrawals;
+    }
+
+    public Float getAverageCost() {
+        int size = stockMovements.size();
+
+        List<StockMovement> lastPurchases = stockMovements.subList(
+                        Math.max(0, size - 10),
+                        size
+                ).stream()
+                .filter(Objects::nonNull)
+                .filter(sm -> sm.getMovementType().equals(MovementType.PURCHASE))
+                .toList();
+
+        float totalAmount = 0f;
+        float totalPrice = 0f;
+
+        for (StockMovement sm : lastPurchases) {
+            totalAmount += sm.getQuantity();
+            totalPrice += sm.getMovementTotalPrice();
+        }
+
+        return totalAmount == 0 ? null : totalPrice / totalAmount;
+    }
 }

@@ -51,4 +51,8 @@ public class StockMovement {
 
     @Column(name = "user_id")
     private Long userId;
+
+    public Float getMovementTotalPrice() {
+        return quantity * unitPrice;
+    }
 }

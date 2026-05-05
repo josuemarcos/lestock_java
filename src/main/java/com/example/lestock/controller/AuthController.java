@@ -5,10 +5,12 @@ import com.example.lestock.controller.dto.login.GoogleLoginDTO;
 import com.example.lestock.controller.dto.login.LoginRequestDTO;
 import com.example.lestock.controller.dto.login.ResponseTokenDTO;
 import com.example.lestock.controller.mapper.UserMapper;
+import com.example.lestock.model.User;
 import com.example.lestock.security.CustomUserDetails;
 import com.example.lestock.security.CustomUserDetailsService;
 import com.example.lestock.security.GoogleTokenVerifierService;
 import com.example.lestock.security.JwtService;
+import com.example.lestock.security.annotation.LoggedUser;
 import com.example.lestock.service.UserService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,10 +54,8 @@ public class AuthController {
 
     @Operation(summary = "Logged user", description = "Return the logged user")
     @GetMapping("/me")
-    public ResponseEntity<?> getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        UserDTO userDTO = userMapper.toDTO(user.getDomainUser());
+    public ResponseEntity<?> getCurrentUser(@LoggedUser User loggedUser) {
+        UserDTO userDTO = userMapper.toDTO(loggedUser);
         return ResponseEntity.ok(userDTO);
     }
 

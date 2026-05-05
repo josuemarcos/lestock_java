@@ -25,11 +25,10 @@ public class StockMovementService {
     public Optional<StockMovement> getStockMovement(Long id) {
         return stockMovementDAO.findById(id);
     }
-    public void save(StockMovement stockMovement) {
+    public void save(StockMovement stockMovement, MaterialType materialType, User loggedUser) {
         stockMovementValidator.validateStockMovement(stockMovement);
-        User user = securityService.getLoggedUser();
-        stockMovement.setUserId(user.getId());
-        stockMovementDAO.save(stockMovement);
+        stockMovement.setUserId(loggedUser.getId());
+        materialType.getStock().addStockMovement(stockMovement);
     }
     public List<StockMovement> getAllStockMovements() {
         return stockMovementDAO.findAll();
@@ -38,57 +37,15 @@ public class StockMovementService {
         return stockMovementDAO.findByStock(stock);
     }
 
-    public void updateStock(StockMovement stockMovement, MaterialType materialType) {
-        stockMovementValidator.validateStockMovement(stockMovement);
-        String operation = stockMovement.getMovementType().toString();
-        switch (operation) {
-            case "PURCHASE" -> incrementStock(stockMovement,  materialType);
-            case "SALE" -> decrementStock(stockMovement,  materialType);
-        }
-    }
-
-    private void incrementStock(StockMovement stockMovement, MaterialType  materialType) {
-        stockService.getStockByMaterialType(materialType)
-                .map( stock -> {
-                    float oldTotalCost = stock.getCurrentQuantity() * stock.getAverageCost();
-                    float newTotalCost = stockMovement.getQuantity() * stockMovement.getUnitPrice();
-                    stock.setAverageCost((oldTotalCost + newTotalCost) / (stock.getCurrentQuantity() + stockMovement.getQuantity()));
-                    stock.setCurrentQuantity(stock.getCurrentQuantity() + stockMovement.getQuantity());
-                    stockService.updateStock(stock);
-                    return null;
-                });
-    }
-    private void decrementStock(StockMovement stockMovement, MaterialType  materialType) {
-        stockService.getStockByMaterialType(materialType)
-                .map(stock -> {
-                    stock.setCurrentQuantity(stock.getCurrentQuantity() - stockMovement.getQuantity());
-                    stockService.updateStock(stock);
-                    return null;
-                });
+    public void updateStock(StockMovement stockMovement, User loggedUser) {
+        stockMovementValidator.validateStockMovementUpdate(stockMovement);
+        stockMovement.setUserId(loggedUser.getId());
+        stockMovementDAO.save(stockMovement);
     }
 
     public void undoStockMovement(StockMovement stockMovement, MaterialType  materialType) {
-        stockMovementValidator.validateStockMovement(stockMovement);
-        if(stockMovement.getMovementType().equals(MovementType.PURCHASE)) {
-            stockService.getStockByMaterialType(materialType)
-                    .map(stock -> {
-                        float oldQuantity = stock.getCurrentQuantity() - stockMovement.getQuantity();
-                        float oldTotalCost = stock.getAverageCost() * stock.getCurrentQuantity();
-                        float newTotalCost = stockMovement.getUnitPrice() * stockMovement.getQuantity();
-                        float oldAverageCost = (oldTotalCost - newTotalCost) / oldQuantity;
-                        stock.setCurrentQuantity(oldQuantity);
-                        stock.setAverageCost(oldAverageCost);
-                        stockService.updateStock(stock);
-                        return null;
-                    });
-        } else {
-            stockService.getStockByMaterialType(materialType)
-                    .map(stock -> {
-                        float oldQuantity = stock.getCurrentQuantity() + stockMovement.getQuantity();
-                        stock.setCurrentQuantity(oldQuantity);
-                        stockService.updateStock(stock);
-                        return null;
-                    });
-        }
+        Stock  stock = stockMovement.getStock();
+        stock.removeStockMovement(stockMovement);
+
     }
 }

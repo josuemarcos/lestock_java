@@ -4,9 +4,11 @@ import com.example.lestock.controller.dto.stock.*;
 import com.example.lestock.controller.mapper.stock.MaterialTypeMapper;
 import com.example.lestock.controller.mapper.stock.StockMapper;
 import com.example.lestock.controller.mapper.stock.StockMovementMapper;
+import com.example.lestock.model.User;
 import com.example.lestock.model.stock.MaterialType;
 import com.example.lestock.model.stock.Stock;
 import com.example.lestock.model.stock.StockMovement;
+import com.example.lestock.security.annotation.LoggedUser;
 import com.example.lestock.service.stock.MaterialTypeService;
 import com.example.lestock.service.stock.StockMovementService;
 import com.example.lestock.service.stock.StockService;
@@ -36,10 +38,11 @@ public class MaterialTypeController implements GenericController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    @Operation(summary = "Save", description = "Register a new material type")
-    ResponseEntity<Void> saveMaterialType(@RequestBody @Valid MaterialTypeDTO materialTypeDTO) {
+    @Operation(summary = "Save Material Type", description = "Register a new material type")
+    ResponseEntity<Void> saveMaterialType(@RequestBody @Valid MaterialTypeDTO materialTypeDTO,
+                                          @LoggedUser User loggedUser) {
         MaterialType materialType = materialTypeMapper.toEntity(materialTypeDTO);
-        materialTypeService.saveMaterialType(materialType);
+        materialTypeService.saveMaterialType(materialType, loggedUser);
         URI location = generateHeaderLocation(materialType.getId());
         return ResponseEntity.created(location).build();
     }
@@ -69,14 +72,16 @@ public class MaterialTypeController implements GenericController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     @Operation(summary = "Update Material Type", description = "Update a Material Type")
-    ResponseEntity<Object> updateMaterialType(@RequestBody @Valid MaterialTypeDTO materialTypeDTO, @PathVariable Long id) {
+    ResponseEntity<Object> updateMaterialType(@RequestBody @Valid MaterialTypeDTO materialTypeDTO,
+                                              @PathVariable Long id,
+                                              @LoggedUser User loggedUser) {
         return materialTypeService.getMaterialType(id)
                 .map(
                         materialType -> {
                             materialType.setName(materialTypeDTO.name());
                             materialType.setMetricUnit(materialTypeDTO.metricUnit());
                             materialType.setBrand(materialTypeDTO.brand());
-                            materialTypeService.updateMaterialType(materialType);
+                            materialTypeService.updateMaterialType(materialType, loggedUser);
                             return ResponseEntity.ok().build();
                         }
                 ).orElse(ResponseEntity.notFound().build());
@@ -97,13 +102,14 @@ public class MaterialTypeController implements GenericController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PostMapping("/{id}/stock")
-    @Operation(summary = "Save", description = "Register a new stock for a specific material type")
-    ResponseEntity<Object> saveStock(@PathVariable Long id, @RequestBody @Valid SaveStockDTO saveStockDTO) {
+    @Operation(summary = "Save Stock", description = "Register a new stock for a specific material type")
+    ResponseEntity<Object> saveStock(@PathVariable Long id, @RequestBody @Valid SaveStockDTO saveStockDTO,
+                                     @LoggedUser User loggedUser) {
         return materialTypeService.getMaterialType(id)
                 .map(materialType -> {
                     Stock stock = stockMapper.toEntity(saveStockDTO);
                     stock.setMaterialType(materialType);
-                    stockService.saveStock(stock);
+                    stockService.saveStock(stock, loggedUser);
                     URI location = generateHeaderLocation(stock.getId());
                     return ResponseEntity.created(location).build();
                 }).orElseGet(() -> ResponseEntity.notFound().build());
@@ -135,19 +141,18 @@ public class MaterialTypeController implements GenericController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @PostMapping("/{id}/stock-movement")
-    @Operation(summary = "Save", description = "Register a new stock movement for a specific material type")
-    ResponseEntity<Object> saveStockMovement(@PathVariable Long id, @RequestBody @Valid SaveStockMovementDTO saveStockMovementDTO) {
-       return materialTypeService.getMaterialType(id)
+    @PostMapping("/{materialTypeId}/stock-movement")
+    @Operation(summary = "Save Stock Movement", description = "Register a new stock movement for a specific material type")
+    ResponseEntity<Object> saveStockMovement(@PathVariable Long materialTypeId, @RequestBody @Valid SaveStockMovementDTO saveStockMovementDTO,
+                                             @LoggedUser User loggedUser) {
+       return materialTypeService.getMaterialType(materialTypeId)
                 .map(materialType -> {
                     if(materialType.getStock() == null) {
                         SaveStockDTO stockDTO = new SaveStockDTO((float) 0, (float) 0);
-                        saveStock(id, stockDTO);
+                        saveStock(materialTypeId, stockDTO, loggedUser);
                     }
                     StockMovement stockMovement = stockMovementMapper.toEntity(saveStockMovementDTO);
-                    stockMovement.setStock(materialType.getStock());
-                    stockMovementService.updateStock(stockMovement, materialType);
-                    stockMovementService.save(stockMovement);
+                    stockMovementService.save(stockMovement, materialType, loggedUser);
                     URI location = generateHeaderLocation(stockMovement.getId());
                     return ResponseEntity.created(location).build();
                 } ).orElseGet(() -> ResponseEntity.notFound().build());
@@ -183,14 +188,15 @@ public class MaterialTypeController implements GenericController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{idMaterialType}/stock-movement/{idStockMovement}")
     @Operation(summary = "Update Stock Movement", description = "Adjust the information of a stock movement of a specific material type")
-    ResponseEntity<Object> adjustStockMovement(@PathVariable Long idMaterialType, @PathVariable Long idStockMovement, @RequestBody @Valid SaveStockMovementDTO saveStockMovementDTO) {
+    ResponseEntity<Object> adjustStockMovement(@PathVariable Long idMaterialType,
+                                               @PathVariable Long idStockMovement,
+                                               @RequestBody @Valid SaveStockMovementDTO newStockMovementDTO,
+                                               @LoggedUser User loggedUser) {
        return  materialTypeService.getMaterialType(idMaterialType)
                 .map(materialType -> stockMovementService.getStockMovement(idStockMovement)
                         .map(stockMovement -> {
-                            stockMovementService.undoStockMovement(stockMovement, materialType);
-                            stockMovementMapper.updateStockMovement(stockMovement, saveStockMovementDTO);
-                            stockMovementService.updateStock(stockMovement, materialType);
-                            stockMovementService.save(stockMovement);
+                            StockMovement updatedStockMovement = stockMovementMapper.toEntity(newStockMovementDTO);
+                            stockMovementService.updateStock(updatedStockMovement, loggedUser);
                             return ResponseEntity.ok().build();
                         }).orElseGet(() -> ResponseEntity.notFound().build()))
                .orElseGet(() -> ResponseEntity.notFound().build());
