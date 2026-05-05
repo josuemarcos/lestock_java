@@ -1,6 +1,7 @@
 package com.example.lestock.controller.product;
 import com.example.lestock.controller.common.GenericController;
-import com.example.lestock.controller.dto.product.CostDTO;
+import com.example.lestock.controller.dto.product.GetCostDTO;
+import com.example.lestock.controller.dto.product.SaveCostDTO;
 import com.example.lestock.controller.mapper.product.CostMapper;
 import com.example.lestock.model.product.Cost;
 import com.example.lestock.service.product.CostService;
@@ -27,7 +28,7 @@ public class CostController implements GenericController {
     @Operation(summary = "Save cost", description = "Save a cost to database")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> saveCost(@RequestBody @Valid CostDTO cost) {
+    public ResponseEntity<Void> saveCost(@RequestBody @Valid SaveCostDTO cost) {
         Cost costEntity = costMapper.toEntity(cost);
         costService.saveCost(costEntity);
         URI location = generateHeaderLocation(costEntity.getId());
@@ -37,15 +38,15 @@ public class CostController implements GenericController {
     @Operation(summary = "Get all costs", description = "Return all saved costs")
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<List<CostDTO>> getAllCosts() {
-        List<CostDTO> costs = costService.getAllCosts().stream().map(costMapper::toDTO).toList();
+    public ResponseEntity<List<GetCostDTO>> getAllCosts() {
+        List<GetCostDTO> costs = costService.getAllCosts().stream().map(costMapper::toDTO).toList();
         return ResponseEntity.ok(costs);
     }
 
     @Operation(summary = "Get cost by id", description = "Return a specific cost by its id")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<CostDTO> getCostById(@PathVariable Long id) {
+    public ResponseEntity<GetCostDTO> getCostById(@PathVariable Long id) {
         return costService
                 .getCostById(id)
                 .map(cost -> ResponseEntity.ok(costMapper.toDTO(cost)))
@@ -55,7 +56,7 @@ public class CostController implements GenericController {
     @Operation(summary = "Update cost", description = "Updated a saved cost")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Object> updateCost(@PathVariable Long id, @RequestBody @Valid CostDTO cost) {
+    public ResponseEntity<Object> updateCost(@PathVariable Long id, @RequestBody @Valid GetCostDTO cost) {
         return costService.getCostById(id).map(foundCost -> {
             foundCost.setName(cost.name());
             foundCost.setUnitPrice(cost.unitPrice());
