@@ -3,9 +3,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
 @Schema(name = "Supplier")
-public record SupplierDTO(
-        Long id,
-        @NotBlank(message = "Name can't be blank")
+public record GetSupplierDTO(
         String name,
         String description,
         String contact,

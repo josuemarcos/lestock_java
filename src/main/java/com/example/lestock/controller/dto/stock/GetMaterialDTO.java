@@ -7,7 +7,7 @@ public record GetMaterialDTO(
         Float pricePerAmount,
         String description,
         Integer averageDeliveryTime,
-        SupplierDTO supplier,
+        GetSupplierDTO supplier,
         MaterialTypeDTO materialType
 ) {
 }

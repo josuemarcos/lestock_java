@@ -1,14 +1,13 @@
 package com.example.lestock.controller.stock;
 import com.example.lestock.controller.common.GenericController;
-import com.example.lestock.controller.dto.stock.SupplierDTO;
+import com.example.lestock.controller.dto.stock.GetSupplierDTO;
+import com.example.lestock.controller.dto.stock.SaveSupplierDTO;
 import com.example.lestock.controller.mapper.stock.SupplierMapper;
 import com.example.lestock.model.User;
 import com.example.lestock.model.stock.Supplier;
 import com.example.lestock.security.annotation.LoggedUser;
 import com.example.lestock.service.stock.SupplierService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,7 @@ public class SupplierController implements GenericController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @Operation(summary = "Save", description = "Register a new supplier")
-    public ResponseEntity<Void> saveSupplier(@RequestBody @Valid SupplierDTO supplierDTO, @LoggedUser User loggedUser) {
+    public ResponseEntity<Void> saveSupplier(@RequestBody @Valid SaveSupplierDTO supplierDTO, @LoggedUser User loggedUser) {
         Supplier supplierEntity = supplierMapper.toEntity(supplierDTO);
         supplierService.saveSupplier(supplierEntity, loggedUser);
         URI location = generateHeaderLocation(supplierEntity.getId());
@@ -39,8 +38,8 @@ public class SupplierController implements GenericController {
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     @Operation(summary = "Get all Suppliers", description = "Retrieve all suppliers from database")
-    public ResponseEntity<List<SupplierDTO>> getSuppliers(){
-        List<SupplierDTO> suppliers = supplierService.getSuppliers()
+    public ResponseEntity<List<GetSupplierDTO>> getSuppliers(){
+        List<GetSupplierDTO> suppliers = supplierService.getSuppliers()
                 .stream()
                 .map(supplierMapper::toDTO)
                 .toList();
@@ -50,11 +49,11 @@ public class SupplierController implements GenericController {
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("{id}")
     @Operation(summary = "Get Supplier", description = "Retrieve a supplier from database")
-    public ResponseEntity<SupplierDTO> getSupplier(@PathVariable Long id){
+    public ResponseEntity<GetSupplierDTO> getSupplier(@PathVariable Long id){
         return supplierService.getSupplierById(id)
                 .map(
                         supplier -> {
-                            SupplierDTO supplierDTO = supplierMapper.toDTO(supplier);
+                            GetSupplierDTO supplierDTO = supplierMapper.toDTO(supplier);
                             return ResponseEntity.ok(supplierDTO);
                         }
                 )
@@ -64,7 +63,7 @@ public class SupplierController implements GenericController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("{id}")
     @Operation(summary = "Update Supplier", description = "Update a supplier")
-    public ResponseEntity<Object> updateSupplier(@PathVariable Long id, @RequestBody @Valid SupplierDTO supplierDTO,
+    public ResponseEntity<Object> updateSupplier(@PathVariable Long id, @RequestBody @Valid GetSupplierDTO supplierDTO,
                                                  @LoggedUser User loggedUser){
         return supplierService.getSupplierById(id)
                 .map(
