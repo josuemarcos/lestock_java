@@ -1,7 +1,9 @@
-package com.example.lestock.validator.stock;
+package com.example.lestock.service.supplier;
+
 import com.example.lestock.controller.dto.errors.FieldErrorDTO;
 import com.example.lestock.dao.stock.SupplierDAO;
 import com.example.lestock.exceptions.DuplicateRecordException;
+import com.example.lestock.exceptions.ResourceNotFoundException;
 import com.example.lestock.model.stock.Supplier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class SupplierValidator  {
+public class SupplierValidationService {
     private final SupplierDAO supplierDAO;
 
     public void validateSupplier(Supplier supplier) {
@@ -39,5 +41,8 @@ public class SupplierValidator  {
                 );
     }
 
+    public Supplier getExistingSupplier(Long supplierId) {
+        return supplierDAO.findById(supplierId)
+                .orElseThrow(() -> new ResourceNotFoundException("Supplier with id " + supplierId + " not found"));
+    }
 }
-

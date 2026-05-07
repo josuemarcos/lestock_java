@@ -1,8 +1,6 @@
 package com.example.lestock.model.stock;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -10,8 +8,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 @Entity
 @Table
-@Getter
-@Setter
+@Builder @AllArgsConstructor @NoArgsConstructor
+@Getter @Setter
 @ToString(exclude = {"materials"})
 @EntityListeners(AuditingEntityListener.class)
 public class Supplier {
@@ -47,15 +45,4 @@ public class Supplier {
 
     @Column(name = "user_id")
     private Long userId;
-
-    public Supplier() {
-    }
-
-    public Supplier(String name, String description, String contact, String socialMedia, String address) {
-        this.name = name;
-        this.description = description;
-        this.contact = contact;
-        this.socialMedia = socialMedia;
-        this.address = address;
-    }
 }

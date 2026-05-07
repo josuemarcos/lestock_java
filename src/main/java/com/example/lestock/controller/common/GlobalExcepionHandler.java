@@ -3,6 +3,7 @@ import com.example.lestock.controller.dto.errors.FieldErrorDTO;
 import com.example.lestock.controller.dto.errors.ResponseErrorDTO;
 import com.example.lestock.exceptions.DuplicateRecordException;
 import com.example.lestock.exceptions.InvalidRecordException;
+import com.example.lestock.exceptions.ResourceNotFoundException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -82,6 +83,11 @@ public class GlobalExcepionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseErrorDTO handleBadCredentialsException(BadCredentialsException e) {
         return new ResponseErrorDTO(HttpStatus.UNAUTHORIZED.value(), "Invalid user name or password", null);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseErrorDTO handleNotFound(ResourceNotFoundException ex) {
+        return new ResponseErrorDTO(HttpStatus.NOT_FOUND.value(), ex.getMessage(), List.of());
     }
 
 

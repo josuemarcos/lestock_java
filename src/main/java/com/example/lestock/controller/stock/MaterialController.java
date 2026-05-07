@@ -10,7 +10,7 @@ import com.example.lestock.security.annotation.LoggedUser;
 import com.example.lestock.service.stock.MaterialService;
 import com.example.lestock.service.stock.MaterialTypeService;
 import com.example.lestock.service.stock.StockService;
-import com.example.lestock.service.stock.SupplierService;
+import com.example.lestock.service.supplier.SupplierService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

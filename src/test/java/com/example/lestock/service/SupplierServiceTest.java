@@ -3,7 +3,7 @@
 //import com.example.lestock.model.stock.Supplier;
 //import com.example.lestock.model.User;
 //import com.example.lestock.security.SecurityService;
-//import com.example.lestock.service.stock.SupplierService;
+//import com.example.lestock.service.supplier.SupplierService;
 //import com.example.lestock.validator.stock.SupplierValidator;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
