@@ -1,7 +1,10 @@
-package com.example.lestock.validator.stock;
+package com.example.lestock.service.stock;
+
 import com.example.lestock.controller.dto.errors.FieldErrorDTO;
 import com.example.lestock.dao.stock.StockDAO;
 import com.example.lestock.exceptions.DuplicateRecordException;
+import com.example.lestock.exceptions.ResourceNotFoundException;
+import com.example.lestock.model.stock.MaterialType;
 import com.example.lestock.model.stock.Stock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,7 +14,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class StockValidator {
+public class StockValidationService {
     private final StockDAO stockDAO;
 
     public void validateStock(Stock stock) {
@@ -38,5 +41,10 @@ public class StockValidator {
                 );
     }
 
-
+    public Stock getStockByMaterialType(MaterialType materialType) {
+        if(materialType.getStock() == null) {
+            throw new ResourceNotFoundException("Stock of material" + materialType.getName() + " not found");
+        }
+        return materialType.getStock();
+    }
 }

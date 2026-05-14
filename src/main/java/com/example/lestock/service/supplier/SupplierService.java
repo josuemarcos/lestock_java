@@ -6,6 +6,8 @@ import com.example.lestock.model.stock.Supplier;
 import com.example.lestock.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -19,6 +21,7 @@ public class SupplierService {
         return supplierDAO.findAll();
     }
 
+    @Transactional
     public Supplier saveSupplier(Supplier supplier, User loggedUser) {
         validateSupplierService.validateSupplier(supplier);
         supplier.setUserId(loggedUser.getId());
@@ -29,6 +32,7 @@ public class SupplierService {
         return validateSupplierService.getExistingSupplier(supplierId);
     }
 
+    @Transactional
     public void updateSupplier(Long supplierId, SaveSupplierDTO updatedSupplier, User loggedUser) {
         Supplier supplier = validateSupplierService.getExistingSupplier(supplierId);
         supplierMapper.updateEntity(supplier, updatedSupplier);
@@ -36,6 +40,7 @@ public class SupplierService {
         supplierDAO.save(supplier);
     }
 
+    @Transactional
     public void deleteSupplier(Long supplierId) {
         Supplier supplier = validateSupplierService.getExistingSupplier(supplierId);
         supplierDAO.delete(supplier);

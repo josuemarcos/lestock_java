@@ -8,25 +8,19 @@ import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring", uses = StockMapper.class)
-public abstract class StockMovementMapper {
-
-    @Autowired
-    SupplierDAO supplierDAO;
-
-    public abstract StockMovement toEntity(SaveStockMovementDTO saveStockMovementDTO);
-    @Mapping(target = "materialType", source = "stock.materialType")
-    public abstract GetStockMovementDTO toDTO(StockMovement stockMovement);
+public interface StockMovementMapper {
 
     @Mapping(target = "supplier", ignore = true)
-    public abstract void updateStockMovement(@MappingTarget StockMovement stockMovement, SaveStockMovementDTO saveStockMovementDTO);
+    @Mapping(target = "stock", ignore = true)
+    StockMovement toEntity(SaveStockMovementDTO dto);
 
-    @AfterMapping
-    protected void resolveRelationships(@MappingTarget StockMovement stockMovement, SaveStockMovementDTO dto) {
+    @Mapping(target = "materialType", source = "stock.materialType")
+    GetStockMovementDTO toDTO(StockMovement entity);
 
-        if(dto.supplierId() != null) {
-            Supplier supplier = supplierDAO.findById(dto.supplierId()).orElse(null);
-            stockMovement.setSupplier(supplier);
-        }
-    }
-
+    @Mapping(target = "supplier", ignore = true)
+    @Mapping(target = "stock", ignore = true)
+    void updateEntity(
+            @MappingTarget StockMovement entity,
+            SaveStockMovementDTO dto
+    );
 }

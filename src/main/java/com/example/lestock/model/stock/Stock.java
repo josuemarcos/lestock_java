@@ -1,19 +1,19 @@
 package com.example.lestock.model.stock;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table
-@Getter
-@Setter
+@Builder @NoArgsConstructor
+@AllArgsConstructor
+@Getter @Setter
 @ToString
 @EntityListeners(AuditingEntityListener.class)
 public class Stock {
@@ -35,8 +35,9 @@ public class Stock {
     @Column(name = "last_modified_date")
     private LocalDateTime lastModifiedDate;
 
-    @OneToMany(mappedBy = "stock")
-    private List<StockMovement> stockMovements;
+    @Builder.Default
+    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StockMovement> stockMovements = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "material_type_id")
@@ -45,8 +46,20 @@ public class Stock {
     @Column(name = "user_id")
     private Long userId;
 
+    public void setMaterialType(MaterialType materialType) {
+        this.materialType = materialType;
+
+        if (materialType != null && materialType.getStock() != this) {
+            materialType.setStock(this);
+        }
+    }
+
     public void addStockMovement(StockMovement stockMovement) {
         this.stockMovements.add(stockMovement);
+
+        if(stockMovement != null && stockMovement.getStock() != this) {
+            stockMovement.setStock(this);
+        }
     }
 
     public void removeStockMovement(StockMovement stockMovement) {

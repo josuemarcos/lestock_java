@@ -1,7 +1,9 @@
-package com.example.lestock.validator.stock;
+package com.example.lestock.service.materialtype;
+
 import com.example.lestock.controller.dto.errors.FieldErrorDTO;
 import com.example.lestock.dao.stock.MaterialTypeDAO;
 import com.example.lestock.exceptions.DuplicateRecordException;
+import com.example.lestock.exceptions.ResourceNotFoundException;
 import com.example.lestock.model.stock.MaterialType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class MaterialTypeValidator  {
+public class MaterialTypeValidationService {
     private final MaterialTypeDAO materialTypeDAO;
 
     public void validateMaterialType(MaterialType materialType) {
@@ -44,5 +46,10 @@ public class MaterialTypeValidator  {
                 .anyMatch(
                         id -> !id.equals(materialType.getId())
                 );
+    }
+
+    public MaterialType getExistingMaterialType(Long materialTypeId) {
+        return  materialTypeDAO.findById(materialTypeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Material type with id " + materialTypeId + " not found"));
     }
 }

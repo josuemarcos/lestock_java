@@ -3,7 +3,7 @@
 //import com.example.lestock.model.stock.MaterialType;
 //import com.example.lestock.model.User;
 //import com.example.lestock.security.SecurityService;
-//import com.example.lestock.service.stock.MaterialTypeService;
+//import com.example.lestock.service.materialtype.MaterialTypeService;
 //import com.example.lestock.validator.stock.MaterialTypeValidator;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;

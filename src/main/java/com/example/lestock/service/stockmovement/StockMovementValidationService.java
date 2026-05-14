@@ -1,6 +1,10 @@
-package com.example.lestock.validator.stock;
+package com.example.lestock.service.stockmovement;
+
 import com.example.lestock.controller.dto.errors.FieldErrorDTO;
+import com.example.lestock.dao.stock.StockMovementDAO;
 import com.example.lestock.exceptions.InvalidRecordException;
+import com.example.lestock.exceptions.ResourceNotFoundException;
+import com.example.lestock.model.stock.MaterialType;
 import com.example.lestock.model.stock.MovementType;
 import com.example.lestock.model.stock.Stock;
 import com.example.lestock.model.stock.StockMovement;
@@ -11,7 +15,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class StockMovementValidator  {
+public class StockMovementValidationService {
+    private final StockMovementDAO stockMovementDAO;
+
+    public StockMovement getExistingStockMovement(Long stockMovementId) {
+        return stockMovementDAO.findById(stockMovementId)
+                .orElseThrow(() -> new ResourceNotFoundException("StockMovement not found with id " + stockMovementId));
+    }
 
     public void validateStockMovement(StockMovement stockMovement) {
         if(isQuantityInvalid(stockMovement)) {
@@ -75,5 +85,13 @@ public class StockMovementValidator  {
                 : -sm.getQuantity();
     }
 
+    public void validateStockMovementFromMaterialType(MaterialType materialType, StockMovement stockMovement) {
+        if(materialType.getStock() == null || !stockMovement.getStock().getMaterialType().equals(materialType)) {
+            FieldErrorDTO fieldError = new FieldErrorDTO("materialTypeId",
+                    "This stock movement doesn't belong to this material type",
+                    "invalidMaterialType");
+            throw new InvalidRecordException("Invalid materialType", List.of(fieldError));
+        }
+    }
 
 }

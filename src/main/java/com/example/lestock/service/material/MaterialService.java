@@ -1,4 +1,4 @@
-package com.example.lestock.service.stock;
+package com.example.lestock.service.material;
 import com.example.lestock.dao.stock.MaterialDAO;
 import com.example.lestock.model.stock.Material;
 import com.example.lestock.model.User;

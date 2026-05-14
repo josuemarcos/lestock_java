@@ -40,7 +40,7 @@ public class Supplier {
     @Column(name = "last_modified_date")
     private LocalDateTime lastModifiedDate;
 
-    @OneToMany(mappedBy = "supplier")
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Material> materials;
 
     @Column(name = "user_id")

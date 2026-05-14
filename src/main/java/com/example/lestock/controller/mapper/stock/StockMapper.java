@@ -5,9 +5,9 @@ import com.example.lestock.model.stock.Stock;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public abstract class StockMapper {
+public interface StockMapper {
 
-    public  abstract Stock toEntity(SaveStockDTO dto);
-    public abstract GetStockDTO toDTO(Stock entity);
+    Stock toEntity(SaveStockDTO dto);
+    GetStockDTO toDTO(Stock entity);
 
 }

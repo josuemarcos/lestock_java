@@ -21,6 +21,7 @@ public class StockMovement {
     @Column(name = "id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "movement_type", nullable = false)
     private MovementType movementType;
 
@@ -51,6 +52,13 @@ public class StockMovement {
 
     @Column(name = "user_id")
     private Long userId;
+
+    public void setStock(Stock stock) {
+        this.stock = stock;
+        if (stock != null && !stock.getStockMovements().contains(this)) {
+            stock.getStockMovements().add(this);
+        }
+    }
 
     public Float getMovementTotalPrice() {
         return quantity * unitPrice;

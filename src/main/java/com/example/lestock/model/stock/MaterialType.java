@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "material_type")
 @Getter
 @Setter
-@ToString(exclude = {"materials"})
+@ToString(exclude = {"materials", "stock"})
 @EntityListeners(AuditingEntityListener.class)
 public class MaterialType
 {
@@ -47,12 +47,20 @@ public class MaterialType
     @Column(name = "last_modified_date")
     private LocalDateTime lastModifiedDate;
 
-    @OneToMany(mappedBy = "materialType")
+    @OneToMany(mappedBy = "materialType", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Material> materials;
 
-    @OneToOne(mappedBy = "materialType")
+    @OneToOne(mappedBy = "materialType", cascade = CascadeType.ALL, orphanRemoval = true)
     private Stock stock;
 
     @Column(name = "user_id")
     private Long userId;
+
+    public void setStock(Stock stock) {
+        this.stock = stock;
+
+        if (stock != null && stock.getMaterialType() != this) {
+            stock.setMaterialType(this);
+        }
+    }
 }
